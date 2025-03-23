@@ -1,25 +1,21 @@
 <?php 
-// Fillo sesionin nëse nuk është aktiv
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-// Përfshij lidhjen me bazën e të dhënave
 include 'components/connection.php';
 
-// Deklaro një array për mbledhjen e mesazheve të gabimeve
 $message = [];
 
-// Kontrollo nëse forma është dorëzuar
 if (isset($_POST['submit'])) {
-    // Gjenero një ID unike për përdoruesin
+
     $email = $_POST['email'];
     $email = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
     $pass = $_POST['pass'];
     $pass = filter_var($_POST['pass'], FILTER_SANITIZE_STRING);
    
 
-    // Kontrollo nëse email-i ekziston tashmë në bazën e të dhënave
+
     $select_user = $conn->prepare("SELECT * FROM `users` WHERE email = ? AND password = ?");
     $select_user->execute([$email, $pass]);
     $row = $select_user->fetch(PDO::FETCH_ASSOC);

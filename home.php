@@ -57,7 +57,6 @@
                     <div class="hero-dec-top"></div>
                     <div class="hero-dec-bottom"></div>
                 </div>
-            <!-- slide end -->
             <div class="slider__slider slide3">
                     <div class="overlay"></div>
                     <div class="slide-detail">
@@ -68,7 +67,6 @@
                     <div class="hero-dec-top"></div>
                     <div class="hero-dec-bottom"></div>
                 </div>
-            <!-- slide end -->
             <div class="slider__slider slide4">
                     <div class="overlay"></div>
                     <div class="slide-detail">
@@ -79,7 +77,6 @@
                     <div class="hero-dec-top"></div>
                     <div class="hero-dec-bottom"></div>
                 </div>
-            <!-- slide end -->
             <div class="slider__slider slide5">
                     <div class="overlay"></div>
                     <div class="slide-detail">
@@ -90,13 +87,11 @@
                     <div class="hero-dec-top"></div>
                     <div class="hero-dec-bottom"></div>
                 </div>
-            <!-- slide end -->
             <div class="left-arrow"><i class="bx bxs-left-arrow"></i></div>
             <div class="right-arrow"><i class="bx bxs-right-arrow"></i></div>
             </div>
             
       </section>
-      <!-- home slider end -->
        <section class="thumb">
         <div class="box-container">
             <div class="box">
@@ -139,79 +134,65 @@
             </div>
         </div>
        </section>
-       <section class="shop">
+       <section id="recommendedBooks" class="shop">
             <div class="title">
-                    <!-- <img src="img/download.png"> -->
-                <h1>Librat me te shitura</h1>
+                <!-- <img src="img/download.png"> -->
+                <h1>Recommended</h1>
             </div>
             <div class="shop-slider">
-                
-                <!-- <div class="row">
-                    <img src="img/about.jpg">
-                    <div class="row-detail">
-                        <img src="img/basil.png">
-                        <div class="top-footer">
-                            <h1>Librat me te shitura</h1>
-                        </div>
-                    </div>
-                </div> -->
                 <div class="box-container">
                     <div class="box">
-                        <img src="img/b1.png" alt="book1">
-                        <a href="view_product.php" class="btn">Shop now</a>
+                        <img src="img/book11.jpg" alt="book1">
+                        <a href="view-book-details.html?book=ANGEL'S TRIBUTE" class="btn">Shop now</a>
                     </div>
                     <div class="box">
-                        <img src="img/b2.jpg">
-                        <a href="view_product.php" class="btn">Shop now</a>
+                        <img src="img/book1.jpg" alt="book2">
+                        <a href="view-book-details.html?book=SOUL" class="btn">Shop now</a>
                     </div>
                     <div class="box">
-                        <img src="img/b3.jpg">
-                        <a href="view_product.php" class="btn">Shop now</a>
+                        <img src="img/book2.webp" alt="book3">
+                        <a href="view-book-details.html?book=WALK INTO THE SHADOW" class="btn">Shop now</a>
                     </div>
                     <div class="box">
-                        <img src="img/b4.jpg">
-                        <a href="view_product.php" class="btn">Shop now</a>
+                        <img src="img/book3.webp" alt="book4">
+                        <a href="view-book-details.html?book=HIDE AND SEEK" class="btn">Shop now</a>
                     </div>
                     <div class="box">
-                        <img src="img/b5.jpg">
-                        <a href="view_product.php" class="btn">Shop now</a>
+                        <img src="img/book4.jpg" alt="book5">
+                        <a href="view-book-details.html?book=THE REGENERATION OF STELLA YIN" class="btn">Shop now</a>
                     </div>
                     <div class="box">
-                        <img src="img/b6.jpg">
-                        <a href="view_product.php" class="btn">Shop now</a>
+                        <img src="img/book5.jpg" alt="book6">
+                        <a href="view-book-details.html?book=OMNI" class="btn">Shop now</a>
                     </div>
                     <div class="box">
-                        <img src="img/b2.png">
-                        <a href="view_product.php" class="btn">Shop now</a>
+                        <img src="img/book6.jpg" alt="book7">
+                        <a href="view-book-details.html?book=EISIGES LAND" class="btn">Shop now</a>
                     </div>
                     <div class="box">
-                        <img src="img/b5.jpg">
-                        <a href="view_product.php" class="btn">Shop now</a>
+                        <img src="img/book7.jpg" alt="book8">
+                        <a href="view-book-details.html?book=THE LONGEST REVOLUTION" class="btn">Shop now</a>
                     </div>
                     <div class="box">
-                        <img src="img/b1.jpg">
-                        <a href="view_product.php" class="btn">Shop now</a>
+                        <img src="img/book8.jpg" alt="book9">
+                        <a href="view-book-details.html?book=BEIEANG" class="btn">Shop now</a>
                     </div>
                     <div class="box">
-                        <img src="img/b6.jpg">
-                        <a href="view_product.php" class="btn">Shop now</a>
+                        <img src="img/book9.jpg" alt="book10">
+                        <a href="view-book-details.html?book=GENIE UND REBELL" class="btn">Shop now</a>
                     </div>
                     <div class="box">
-                        <img src="img/b4.jpg">
-                        <a href="view_product.php" class="btn">Shop now</a>
+                        <img src="img/book10.jpg" alt="book11">
+                        <a href="view-book-details.html?book=KEEP THE MEMORIES" class="btn">Shop now</a>
                     </div>
-                    <div class="box">
-                        <img src="img/b3.jpg">
-                        <a href="view_product.php" class="btn">Shop now</a>
-                    </div>
-                
-                 </div>
+                </div>
 
-            <div class="shop-left-arrow"><i class="bx bxs-left-arrow"></i></div>
-            <div class="shop-right-arrow"><i class="bx bxs-right-arrow"></i></div>
+                <div class="shop-left-arrow"><i class="bx bxs-left-arrow"></i></div>
+                <div class="shop-right-arrow"><i class="bx bxs-right-arrow"></i></div>
             </div>
-        
-       </section>
+
+        </section>
+   
        <section class="services">
         <div class="box-container">
             <div class="box">
@@ -252,6 +233,10 @@
 
     </div>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11" defer></script>
+    <script>
+      
+
+    </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js" defer></script>
     <script src="script.js" defer></script>
     <?php  include 'components/alert.php' ; ?>

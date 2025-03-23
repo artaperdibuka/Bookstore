@@ -20,7 +20,7 @@ html {
 }
 
 body {
-    background-image: url(); /* Shto një URL të vlefshme nëse ke */
+    background-image: url(); 
     width: 100%;
 }
 
@@ -42,7 +42,7 @@ a {
     text-transform: uppercase;
     font-size: 1rem;
     margin: 1rem 0;
-    line-height: 1.5; /* Rregullim i lartësisë së linjës */
+    line-height: 1.5; 
 }
 .title .logo{
     width: 100px;
@@ -141,7 +141,7 @@ button {
 }
 
 .banner {
-    background-image: url(img/banner.jpg); /* Shto një URL të vlefshme nëse ke */
+    background-image: url(img/banner.jpg); 
     background-size: cover;
     background-position: center;
     background-color: var(--green);
@@ -204,7 +204,7 @@ header {
     z-index: 101;
     transition: 0.3s;
     box-shadow: var(--box-shadow);
-    background-color: #fff; /* Shto një ngjyrë për sfond */
+    background-color: #fff; 
 }
 
 header.scrolled {
@@ -230,15 +230,15 @@ header.scrolled {
     font-size: 1rem;
     color: #000;
     text-transform: uppercase;
-    padding: 0.5rem; /* Shto padding për të balancuar */
+    padding: 0.5rem; 
     display: inline-block;
-    border-bottom: 2px solid transparent; /* Vija transparente */
+    border-bottom: 2px solid transparent; 
     transition: border-color 0.3s ease;
 }
 
 .navbar a:hover {
     color: var(--green);
-    border-bottom-color: var(--green); /* Ngjyra e vijës gjatë hover-it */
+    border-bottom-color: var(--green); 
 }
 
 .header .icons {
@@ -485,140 +485,149 @@ header.scrolled {
     margin: 0;
 } */
 
-.container .box #sale-image { /* Përdorimi i selektorit të saktë */
-    max-width: 100%; /* Përcaktoni madhësinë e imazhit */
-    height: auto; /* Ruajtja e raportit të lartësisë */
-    margin: 20px 0 10px 45px; /* Shtimi i margjinës sipër për të lëvizur imazhin poshtë */
+.container .box #sale-image { 
+    max-width: 100%; 
+    height: auto; 
+    margin: 20px 0 10px 45px; 
 }
 
 /* section shop */
-.shop {
-    background-color: #fff; /* Ngjyra e bardhë për sfondin */
-    margin: 3rem 0;
-    padding: 2rem 2rem;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Hije për theksim të seksionit */
-    position: relative;
-}
 .shop .title {
+    margin-bottom: 2rem;
+ 
+    padding: 1.5rem;
+
+}
+
+.shop .title h1 {
+    font-size: 1.5rem;
    
-    margin-bottom: 2rem; /* Hapësira poshtë titullit */
-    padding: 1.5rem; /* Hapësira brenda titullit */
-  
+    letter-spacing: 3px;
+ 
+    font-family: "Arial", sans-serif;
+
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+    text-align: left;
+    border-bottom: 1px solid #1b1a1a23;
 }
 
 .shop-slider {
     position: relative;
     overflow: hidden;
+ 
     width: 100%;
+    max-width: 1200px;
+    margin: auto;
 }
 
 .shop-slider .box-container {
     display: flex;
-    transition: transform 0.5s ease;
-    
+    transition: transform 0.5s ease-in-out;
+
+    gap: 2%;
 }
 
 .shop-slider .box {
-    flex: 0 0 25%; /* Kjo përcakton gjerësinë e çdo libri (25% për 4 libra në një rresht) */
-    min-width: 25%;
-    padding: 10px;
+    flex: 0 0 calc(20% - 2%);
+    position: relative;
     box-sizing: border-box;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.shop-left-arrow,
+.shop-right-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.5rem;
+    width: 40px;
+    height: 40px;
+    background-color: var(--light-green);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2;
+    cursor: pointer;
+}
+
+.shop-right-arrow {
+    right: 1rem;
+}
+
+.shop-left-arrow {
+    left: 1rem;
 }
 
 .shop-slider .box img {
     width: 100%;
-    height: auto;
-    object-fit: cover;
+    height: 250px;
+
+    object-fit: contain;
+
+    border-radius: 5px;
+    margin-bottom: 10px;
+ 
 }
 
-.shop-slider .box-container.hide {
-    transform: translateX(-100%); /* Lëviz të tjerët kur klikoni shigjetat */
-}
-
-.shop .title h1 {
-    font-size: 1.5rem; /* Madhësia e titullit */
-    letter-spacing: 3px; /* Hapësira midis shkronjave */
-    margin: 0; /* Eliminon margjinat e parazgjedhura */
-    font-family: 'Arial', sans-serif; /* Zgjidhni një font të përshtatshëm */
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2); 
-    text-align: left;
-    border-bottom: 1px solid #1b1a1a23;
-    padding-bottom: 10px;
-}
-
-
-.shop .box-container .box{
-    margin: 1rem;
-    box-shadow: var(--box-shadow);
-    position: relative;
-    background-color: #fff;
-}
-
-.shop .btn{ 
-    position: absolute; 
-    left: 30%; bottom: -3%;
-    display: block;
-    margin: 0; 
+.shop-slider .box .btn {
+    margin-top: 10px;
     background-color: var(--light-green);
     color: #000;
     padding: 0.5rem 1rem;
-    bottom: 10px;
+    font-size: 14px;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    align-self: center;
+  
+}
 
+.shop-slider .box .btn:hover {
+    background-color: #aad576;
+  
 }
-.shop-left-arrow,
-.shop-right-arrow{
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 1rem;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background: var(--light-green);
-    box-shadow: 0 0 0 6px rgb(255, 255, 255 / 40%);
-    z-index: 2;
-    cursor: pointer;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    color: #000;
-    display: flex;
-}
-.shop-right-arrow{
-    right: 1rem;
-    z-index: 3;
-}
-.shop-left-arrow{
-    left: 1rem;
-}
+
 .hero-dec-top,
-.hero-dec-bottom{
-    position:absolute;
+.hero-dec-bottom {
+    position: absolute;
     left: 5%;
     width: 100px;
     height: 100px;
 }
-.hero-dec-top{
+
+.hero-dec-top {
     top: 4%;
     border-left: 2px solid #e2e2e255;
     border-top: 2px solid #e2e2e255;
-
 }
-.hero-dec-top{
+
+.hero-dec-top {
     top: 4%;
     border-left: 2px solid #e2e2e255;
     border-bottom: 2px solid #e2e2e255;
 }
+
 /* services */
 .services{
     padding: 3rem 0;
     text-align: center;
     line-height: 2;
     margin: 3rem 0;
-    background-color: #fff; /* Ngjyra e bardhë për sfondin */
+    background-color: #fff; 
    
     
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Hije për theksim të seksionit */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); 
     position: relative;
 
 }
@@ -682,7 +691,7 @@ header.scrolled {
     margin-bottom: 1.5rem;
     position: relative;
     padding-bottom: 10px;
-    font-weight: 400; /* Më pak e trashë se default */
+    font-weight: 400; 
     letter-spacing: 0.5px; 
 }
 
@@ -740,13 +749,12 @@ textarea{
 }
 
 .required-star {
-    color: red; /* Ngjyra e yllit */
-    margin-left: 3px; /* Hapësira majtas */
-    font-weight: bold; /* E theksuar */
-    /* Hiqni çdo stil tjetër që mund të ndikojë */
-    background: none; /* Hiqni çdo sfond */
-    border-radius: 0; /* Hiqni rrethin */
-    padding: 0; /* Hiqni çdo padding */
+    color: red; 
+    margin-left: 3px; 
+    font-weight: bold; 
+    background: none; 
+    border-radius: 0; 
+    padding: 0; 
 }
 
 .main-container input[type=submit]{
@@ -812,49 +820,49 @@ textarea{
 }
 /* products */
 .products .box-container {
-    display: grid; /* Përdorim grid për të organizuar kutitë */
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Rregulloni minmax sipas nevojës */
-    gap: 20px; /* Hapësira midis kutive */
-    padding: 20px; /* Hapësira brenda seksionit */
+    display: grid; 
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); 
+    gap: 20px; 
+    padding: 20px; 
 }
 
 .products .box-container .box{
     box-shadow: var(--box-shadow);
     border-radius: 0.5rem;
-    padding: 1rem; /* Rregulloni sipas nevojës */
-    background-color: #fff; /* Ngjyra e sfondit */
+    padding: 1rem; 
+    background-color: #fff; 
     position: relative;
 }
 .products .box-container .box{
     display: flex;
-    flex-direction: column; /* Kjo do t'i mbajë elementet brenda box-it vertikalisht */
-    justify-content: space-between; /* Siguron që hapësira të shpërndahet baraz */
+    flex-direction: column; 
+    justify-content: space-between;
     height: 100%; 
 }
 .products .box-container .box .img{
-    width: 100%; /* E bën imazhin të zërë të gjithë hapësirën e kutisë */
-    height: auto; /* Mban proporcionin e imazhit */
-    max-height: 300px; /* Rregulloni këtë sipas nevojës për të kontrolluar lartësinë */
+    width: 100%; 
+    height: auto; 
+    max-height: 300px; 
     object-fit: contain; 
   
 }
 .products .box-container .box .button {
-    display: flex; /* Përdorim flex për të rregulluar butonat */
-    justify-content: center; /* Qendron butonat horizontalisht */
-    margin-top: 10px; /* Hapësira midis butonave dhe emrit të produktit */
+    display: flex; 
+    justify-content: center; 
+    margin-top: 10px; 
 }
 
 .products .box-container .box .name {
     font-size: 1.2rem;
     color: #555;
     text-transform: capitalize;
-    margin: 10px 0; /* Hapësira midis emrit të produktit dhe çmimit */
+    margin: 10px 0; 
 }
 
 .products .box-container .box .price {
     font-size: 1.1rem;
     color: var(--green);
-    margin: 10px 0; /* Hapësira midis çmimit dhe butonave */
+    margin: 10px 0; 
 }
 .products .box-container .box .button i, 
 .products .box-container .box .button a{
@@ -865,8 +873,8 @@ textarea{
 }
 .products .box-container .box .flex{
     display: flex;
-    justify-content: space-between; /* Ndihmon në shpërndarjen e elementeve */
-    align-items: center; /* Qendron elementet vertikalisht */
+    justify-content: space-between; 
+    align-items: center; 
     margin-top: auto;
 }
 .products .box-container .box .price{
@@ -875,13 +883,13 @@ textarea{
     margin: 10px 0; 
 }
 .products .box-container .box .btn{
-    margin-top: 1rem; /* Shtoni hapësirë mes çmimit dhe butonit "buy now" */
+    margin-top: 1rem; 
     
     padding: .5rem 1.5rem;
     border-radius: 20px;
     text-align: center;
-    color: #000; /* Ngjyra e tekstit në buton */
-    text-decoration: none; /* Hiqni nënvizimin */
+    color: #000; 
+    text-decoration: none; 
     display: inline-block; 
 }
 .products .box-container .box .flex .qty{
@@ -902,9 +910,9 @@ textarea{
     margin-left: .5rem;
 }
 .products .box-container .box .flex .img{
-    width: 100%; /* E bën imazhin të zërë të gjithë hapësirën e kutisë */
-    height: auto; /* Mban proporcionin e imazhit */
-    max-height: 300px; /* Rregulloni këtë sipas nevojës për të kontrolluar lartësinë */
+    width: 100%; 
+    height: auto; 
+    max-height: 300px; 
     object-fit: contain;
 }
 .products .box-container .box .flex .fa-edit:hover{
@@ -934,6 +942,106 @@ textarea{
 .products .cart-total p span{
     color: var(--green);
 }
+
+.filter-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.search-form {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.search-form input {
+    padding: 8px;
+    width: 300px; 
+    border: none; 
+    border-bottom: 2px solid #333; 
+    outline: none; 
+    font-size: 16px;
+    background-color: transparent; 
+}
+
+
+
+.search-form input:focus {
+    border-bottom-color: #555; 
+}
+
+
+.price-filter-form {
+    display: flex;
+    align-items: center;
+}
+
+.price-filter-form input {
+    padding: 8px;
+    width: 100px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-right: 10px;
+}
+
+.price-filter-form button {
+    background-color: #333;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.price-filter-form button:hover {
+    background-color: #555;
+}
+
+.sort-form {
+    display: flex;
+    align-items: center;
+}
+
+.sort-form select {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: white;
+    cursor: pointer;
+}
+
+.sort-form select:hover {
+    border-color: #888;
+}
+
+.old-price {
+    text-decoration: line-through;
+    color: gray;
+    margin-right: 5px;
+}
+
+.new-price {
+    font-weight: bold;
+    color: red;
+}
+.old-price {
+    text-decoration: line-through;
+    color: gray;
+    margin-right: 5px;
+}
+
+.new-price {
+    font-weight: bold;
+    color: red;
+}
+
+
 .success {
     color: green;
     background-color: #d4edda;
@@ -977,7 +1085,7 @@ textarea{
 }
 /* .products {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* Rregulloni kolonat për të mbushur hapësirën 
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); 
     justify-content: center;
     padding: 2rem;
 } 
@@ -988,11 +1096,11 @@ textarea{
     padding: 1rem;
     background-color: #fff;
     display: flex;
-    flex-direction: column;  Nëse dëshironi që përmbajtjet e brendshme të shfaqen vertikalisht 
+    flex-direction: column; 
     align-items: center;
     text-align: center;
     max-width: 300px;
-    margin: 20px; /* Ndryshoni këtë në 20px për të shmangur auto 
+    margin: 20px; /* 
 }
 
 .products .box .img {
