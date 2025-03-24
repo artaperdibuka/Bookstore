@@ -233,3 +233,4 @@ shopSlider.addEventListener('mouseleave', startAutoSlide);
 // Inicializimi i slider-it
 setupInfiniteSlider();
 startAutoSlide();
+

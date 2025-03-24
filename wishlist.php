@@ -1,24 +1,24 @@
 <?php
-// Filloni sesionin nëse nuk është aktiv
+
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-// Përfshini lidhjen me bazën e të dhënave
+
 include_once 'components/connection.php';
 
-// Kontrolloni nëse përdoruesi është i identifikuar
+
 if(isset($_SESSION['user_id'])){
     $user_id = $_SESSION['user_id'];
 } else {
     $user_id = '';
 }
 
-// Inicializoni mesazhet
+
 $success_msg = [];
 $warning_msg = [];
 
-// Procesoni daljen
+
 if(isset($_POST['logout'])){
     session_destroy();
     header('Location: login.php');
@@ -26,16 +26,16 @@ if(isset($_POST['logout'])){
 }
 
 if(isset($_POST['add_to_cart'])){
-    $id = uniqueid(); // Krijoni një ID unike për wishlist
+    $id = uniqueid(); 
     $product_id = $_POST['product_id'];
 
-    // Kontrolloni nëse përdoruesi është i identifikuar
+  
     if (empty($user_id)) {
         $warning_msg[] = 'Please log in to add products to your wishlist.';
     } else {
         $qty = 1;
         $qty = filter_var($qty, FILTER_SANITIZE_STRING);
-        // Kontrolloni nëse produkti është tashmë në wishlist
+      
         $varify_cart = $conn->prepare("SELECT * FROM `cart` WHERE user_id = ? AND product_id = ?");
         $varify_cart->execute([$user_id, $product_id]);
 
@@ -48,12 +48,12 @@ if(isset($_POST['add_to_cart'])){
         else if($max_cart_items->rowCount() > 20){
             $warning_msg[] = 'cart is full';
         } else {
-            // Merrni çmimin e produktit
+          
             $select_price = $conn->prepare("SELECT * FROM `products` WHERE id = ? LIMIT 1");
             $select_price->execute([$product_id]);
             $fetch_price = $select_price->fetch(PDO::FETCH_ASSOC);
             
-            // Shtoni produktin në wishlist
+           
             $insert_cart = $conn->prepare("INSERT INTO `cart`(id, user_id, product_id, price, qty) VALUES (?, ?, ?, ? ,?)");
             $insert_cart->execute([$id, $user_id, $product_id, $fetch_price['price'], $qty]);
             $success_msg[] = 'Product added to cart successfully';
@@ -61,7 +61,7 @@ if(isset($_POST['add_to_cart'])){
     }
 }
 
-//delete item from wishlist
+
 if(isset($_POST['delete_item'])){
     $wishlist_id = $_POST['wishlist_id'];
     $wishlist_id = filter_var($wishlist_id, FILTER_SANITIZE_STRING);
@@ -141,7 +141,7 @@ if(isset($_POST['delete_item'])){
                          }
                         }
                     }else {
-                        echo '<p class="empty">No products added yet.</p>'; // Mesazhi nëse nuk ka produkte
+                        echo '<p class="empty">No products added yet.</p>'; 
                     }
                 ?>
             </div>
@@ -152,9 +152,9 @@ if(isset($_POST['delete_item'])){
         <?php include 'components/footer.php'; ?>
     </div>
 
-    <!-- JavaScript files -->
+
     <script>
-    // Funksioni për të shfaqur mesazhet
+   
         function showAlert(type, message) {
             Swal.fire({
                 icon: type,
@@ -164,7 +164,7 @@ if(isset($_POST['delete_item'])){
             });
         }
 
-        // Kontrolloni nëse ka mesazhe suksesi ose paralajmërimi
+       
         <?php if (!empty($success_msg)): ?>
             <?php foreach ($success_msg as $msg): ?>
                 showAlert('success', '<?php echo $msg; ?>');

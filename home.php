@@ -1,6 +1,6 @@
 <?php 
     if (session_status() == PHP_SESSION_NONE) {
-        session_start(); // Vetëm nëse sesioni nuk është aktiv
+        session_start(); 
     }
     include 'components/connection.php';
 
@@ -13,7 +13,7 @@
     if(isset ($_POST['logout'])){
         session_destroy();
         header('Location: home.php');
-        exit; // Shtoni exit pas header për të ndaluar ekzekutimin e mëtejshëm
+        exit; 
     }
 ?>
 
@@ -136,7 +136,7 @@
        </section>
        <section id="recommendedBooks" class="shop">
             <div class="title">
-                <!-- <img src="img/download.png"> -->
+           
                 <h1>Recommended</h1>
             </div>
             <div class="shop-slider">
@@ -228,7 +228,7 @@
     
 
 
-      <?php include 'components/footer.php'?> <!-- Vendosim footer-in këtu -->
+      <?php include 'components/footer.php'?>
 
 
     </div>

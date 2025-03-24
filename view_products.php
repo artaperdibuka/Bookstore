@@ -207,7 +207,7 @@ $select_products->execute();
     <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <title>BookstoreBuzuku - Products Page</title>
+    <title>BookstoreBuzuku - Books Page</title>
     <style type="text/css">
         <?php include 'style.css'; ?>
     </style>
@@ -217,30 +217,31 @@ $select_products->execute();
     <?php include 'components/header.php'; ?>
     <div class="main">
         <div class="tittle2">
-            <a href="home.php">Home</a><span>products</span>
+            <a href="home.php">Home</a><span>Books</span>
         </div>
 
         <div class="filter-container">
-            <form action="" method="GET" class="search-form">
-                <input type="text" name="search" placeholder="Search books..." value="<?= isset($_GET['search']) ? htmlspecialchars($_GET['search']) : '' ?>">
-            </form>
-
+           
+        <form action="" method="GET" class="sort-form">
+    <select name="sort" onchange="this.form.submit()">
+        <option value="">Sort by</option>
+        <option value="newest" <?= (isset($_GET['sort']) && $_GET['sort'] == 'newest') ? 'selected' : ''; ?>>Newest</option>
+        <option value="low_to_high" <?= (isset($_GET['sort']) && $_GET['sort'] == 'low_to_high') ? 'selected' : ''; ?>>Price: Low to High</option>
+        <option value="high_to_low" <?= (isset($_GET['sort']) && $_GET['sort'] == 'high_to_low') ? 'selected' : ''; ?>>Price: High to Low</option>
+        <option value="discount" <?= (isset($_GET['sort']) && $_GET['sort'] == 'discount') ? 'selected' : ''; ?>>Biggest Discounts</option>
+    </select>
+</form>
 
 
             <form action="" method="GET" class="price-filter-form">
-                <input type="number" name="min_price" placeholder="Min Price" value="<?= isset($_GET['min_price']) ? htmlspecialchars($_GET['min_price']) : '' ?>">
-                <input type="number" name="max_price" placeholder="Max Price" value="<?= isset($_GET['max_price']) ? htmlspecialchars($_GET['max_price']) : '' ?>">
+                <input type="number" name="min_price" placeholder="Min" value="<?= isset($_GET['min_price']) ? htmlspecialchars($_GET['min_price']) : '' ?>">
+                <input type="number" name="max_price" placeholder="Max" value="<?= isset($_GET['max_price']) ? htmlspecialchars($_GET['max_price']) : '' ?>">
                 <button type="submit">Filter</button>
             </form>
 
-            <form action="" method="GET" class="sort-form">
-                <select name="sort" onchange="this.form.submit()">
-                    <option value="">Rendit sipas</option>
-                    <option value="newest" <?= (isset($_GET['sort']) && $_GET['sort'] == 'newest') ? 'selected' : ''; ?>>Më të rejat</option>
-                    <option value="low_to_high" <?= (isset($_GET['sort']) && $_GET['sort'] == 'low_to_high') ? 'selected' : ''; ?>>Çmimi: i ulët në të lartë</option>
-                    <option value="high_to_low" <?= (isset($_GET['sort']) && $_GET['sort'] == 'high_to_low') ? 'selected' : ''; ?>>Çmimi: i lartë në të ulët</option>
-                    <option value="discount" <?= (isset($_GET['sort']) && $_GET['sort'] == 'discount') ? 'selected' : ''; ?>>Zbritjet më të mëdha</option>
-                </select>
+           
+            <form action="" method="GET" class="search-form">
+                <input type="text" name="search" placeholder="Search books..." value="<?= isset($_GET['search']) ? htmlspecialchars($_GET['search']) : '' ?>">
             </form>
         </div>
 
