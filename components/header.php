@@ -50,7 +50,7 @@ if ($user_id !== null) {
             <div class="dropdown">
                 <a href="view_products.php" class="dropbtn">Books <i class="bx bx-chevron-down"></i></a>
                 <div class="dropdown-content">
-                    <a href="view_products.php">All Books</a>
+                    
                     <?php
                     $categories = $conn->query("SELECT * FROM categories ORDER BY name");
                     while ($category = $categories->fetch(PDO::FETCH_ASSOC)):

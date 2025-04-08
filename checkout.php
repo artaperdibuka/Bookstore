@@ -1,34 +1,34 @@
 <?php
-// Filloni sesionin nëse nuk është aktiv
+
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-// Përfshini lidhjen me bazën e të dhënave
+
 include_once 'components/connection.php';
 
-// Kontrolloni nëse përdoruesi është i identifikuar
+
 if (isset($_SESSION['user_id'])) {
     $user_id = $_SESSION['user_id'];
 } else {
     $user_id = '';
 }
 
-// Inicializoni mesazhet
+
 $success_msg = [];
 $warning_msg = [];
 
-// Procesoni daljen
 if (isset($_POST['logout'])) {
     session_destroy();
     header('Location: login.php');
     exit();
 }
+
 if (isset($_POST['place_order'])) {
     $name = $_POST['name'];
     $name = filter_var($name, FILTER_SANITIZE_STRING);
     $number = $_POST['number'];
-    $number = filter_var($number, FILTER_SANITIZE_STRING); // Fixed variable name
+    $number = filter_var($number, FILTER_SANITIZE_STRING);
     $email = $_POST['email'];
     $email = filter_var($email, FILTER_SANITIZE_STRING);
     $address = $_POST['flat'] . ', ' . $_POST['street'] . ', ' . $_POST['city'] . ', ' . $_POST['country'] . ', ' . $_POST['pincode'];
@@ -65,7 +65,7 @@ if (isset($_POST['place_order'])) {
         }
     } elseif ($varify_cart->rowCount() > 0) {
         while ($f_cart = $varify_cart->fetch(PDO::FETCH_ASSOC)) {
-            // Fetch the product details for each item in the cart
+    
             $get_product = $conn->prepare("SELECT * FROM `products` WHERE id = ? LIMIT 1");
             $get_product->execute([$f_cart['product_id']]);
             
@@ -77,7 +77,7 @@ if (isset($_POST['place_order'])) {
                 $insert_order->execute([$user_id, $name, $number, $email, $address, $address_type, $method, $fetch_p['id'], $fetch_p['price'], $f_cart['qty']]);
     
                 if ($insert_order) {
-                    // Delete the item from the cart after placing the order
+                
                     $delete_cart = $conn->prepare("DELETE FROM `cart` WHERE user_id = ? AND product_id = ?");
                     $delete_cart->execute([$user_id, $f_cart['product_id']]);
                 } else {

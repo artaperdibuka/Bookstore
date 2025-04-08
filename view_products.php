@@ -92,22 +92,14 @@ if (isset($_POST['add_to_cart'])) {
         }
     }
 }
-
-
 $limit = 8;
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 $offset = max(0, ($page - 1) * $limit);
-
-
-
-$total_products = $conn->query("SELECT COUNT(*) FROM `products`")->fetchColumn();
-$total_pages = ($total_products > 0) ? ceil($total_products / $limit) : 1;
 
 $search = isset($_GET['search']) ? trim($_GET['search']) : '';
 $sort = isset($_GET['sort']) ? $_GET['sort'] : '';
 $min_price = isset($_GET['min_price']) && $_GET['min_price'] !== '' ? (float)$_GET['min_price'] : null;
 $max_price = isset($_GET['max_price']) && $_GET['max_price'] !== '' ? (float)$_GET['max_price'] : null;
-
 
 $query = "SELECT *, 
           CASE 
@@ -117,48 +109,46 @@ $query = "SELECT *,
           FROM `products`";
 
 $whereConditions = [];
+$params = [];
+$category_name = '';
 
+if (isset($_GET['category_id']) && is_numeric($_GET['category_id'])) {
+    $category_id = (int)$_GET['category_id'];
+    $whereConditions[] = "category_id = :category_id";
+    $params[':category_id'] = $category_id;
 
-if (!empty($search)) {
-    $whereConditions[] = "name LIKE :search";
+    $stmt = $conn->prepare("SELECT name FROM categories WHERE id = ?");
+    $stmt->execute([$category_id]);
+    $category_data = $stmt->fetch(PDO::FETCH_ASSOC);
+    $category_name = $category_data ? $category_data['name'] : 'Unknown Category';
 }
 
-$min_price = isset($_GET['min_price']) && $_GET['min_price'] !== '' ? (float)$_GET['min_price'] : null;
-$max_price = isset($_GET['max_price']) && $_GET['max_price'] !== '' ? (float)$_GET['max_price'] : null;
-
-
-$query = "SELECT *, 
-         CASE 
-             WHEN discount_price > 0 THEN discount_price 
-             ELSE price 
-         END AS final_price 
-         FROM `products`";
-
-$whereConditions = [];
-
-
 if (!empty($search)) {
     $whereConditions[] = "name LIKE :search";
+    $params[':search'] = "%$search%";
 }
 
 if ($min_price !== null && $max_price !== null) {
     $whereConditions[] = "(CASE WHEN discount_price > 0 THEN discount_price ELSE price END) BETWEEN :min_price AND :max_price";
+    $params[':min_price'] = $min_price;
+    $params[':max_price'] = $max_price;
 } elseif ($min_price !== null) {
     $whereConditions[] = "(CASE WHEN discount_price > 0 THEN discount_price ELSE price END) >= :min_price";
+    $params[':min_price'] = $min_price;
 } elseif ($max_price !== null) {
     $whereConditions[] = "(CASE WHEN discount_price > 0 THEN discount_price ELSE price END) <= :max_price";
+    $params[':max_price'] = $max_price;
 }
-
 
 switch ($sort) {
     case 'newest':
         $orderBy = "ORDER BY created_at DESC";
         break;
     case 'low_to_high':
-        $orderBy = "ORDER BY (CASE WHEN discount_price > 0 THEN discount_price ELSE price END) ASC";
+        $orderBy = "ORDER BY final_price ASC";
         break;
     case 'high_to_low':
-        $orderBy = "ORDER BY (CASE WHEN discount_price > 0 THEN discount_price ELSE price END) DESC";
+        $orderBy = "ORDER BY final_price DESC";
         break;
     case 'discount':
         $whereConditions[] = "discount_price > 0";
@@ -173,29 +163,30 @@ if (!empty($whereConditions)) {
     $query .= " WHERE " . implode(" AND ", $whereConditions);
 }
 
+$countQuery = "SELECT COUNT(*) FROM `products`";
+if (!empty($whereConditions)) {
+    $countQuery .= " WHERE " . implode(" AND ", $whereConditions);
+}
+
+$stmt = $conn->prepare($countQuery);
+foreach ($params as $key => $value) {
+    $stmt->bindValue($key, $value);
+}
+$stmt->execute();
+$total_products = $stmt->fetchColumn();
+$total_pages = ($total_products > 0) ? ceil($total_products / $limit) : 1;
 
 $query .= " $orderBy LIMIT :limit OFFSET :offset";
 $select_products = $conn->prepare($query);
 
-if (!empty($search)) {
-    $searchTerm = "%$search%";
-    $select_products->bindParam(':search', $searchTerm, PDO::PARAM_STR);
+foreach ($params as $key => $value) {
+    $select_products->bindValue($key, $value);
 }
 
-if ($min_price !== null) {
-    $select_products->bindParam(':min_price', $min_price, PDO::PARAM_STR);
-}
-
-if ($max_price !== null) {
-    $select_products->bindParam(':max_price', $max_price, PDO::PARAM_STR);
-}
-
-$select_products->bindParam(':limit', $limit, PDO::PARAM_INT);
-$select_products->bindParam(':offset', $offset, PDO::PARAM_INT);
+$select_products->bindValue(':limit', $limit, PDO::PARAM_INT);
+$select_products->bindValue(':offset', $offset, PDO::PARAM_INT);
 $select_products->execute();
-
 ?>
-
 
 
 <!DOCTYPE html>
@@ -217,30 +208,83 @@ $select_products->execute();
     <?php include 'components/header.php'; ?>
     <div class="main">
         <div class="tittle2">
-            <a href="home.php">Home</a><span>Books</span>
+            <a href="home.php">Home</a>
+            <span>
+                <?php if (isset($_GET['category_id'])): ?>
+                    <a href="view_products.php">Books</a>
+                <?php else: ?>
+                    Books
+                <?php endif; ?>
+            </span>
+            <?php if (isset($_GET['category_id']) && !empty($category_name)): ?>
+                <span><?= htmlspecialchars($category_name) ?></span>
+            <?php endif; ?>
         </div>
 
+
         <div class="filter-container">
-           
-        <form action="" method="GET" class="sort-form">
-    <select name="sort" onchange="this.form.submit()">
-        <option value="">Sort by</option>
-        <option value="newest" <?= (isset($_GET['sort']) && $_GET['sort'] == 'newest') ? 'selected' : ''; ?>>Newest</option>
-        <option value="low_to_high" <?= (isset($_GET['sort']) && $_GET['sort'] == 'low_to_high') ? 'selected' : ''; ?>>Price: Low to High</option>
-        <option value="high_to_low" <?= (isset($_GET['sort']) && $_GET['sort'] == 'high_to_low') ? 'selected' : ''; ?>>Price: High to Low</option>
-        <option value="discount" <?= (isset($_GET['sort']) && $_GET['sort'] == 'discount') ? 'selected' : ''; ?>>Biggest Discounts</option>
-    </select>
-</form>
+
+            <form action="" method="GET" class="sort-form">
+            
+                <?php if (isset($_GET['category_id']) && is_numeric($_GET['category_id'])): ?>
+                    <input type="hidden" name="category_id" value="<?= (int)$_GET['category_id'] ?>">
+                <?php endif; ?>
+
+                <?php if (!empty($_GET['search'])): ?>
+                    <input type="hidden" name="search" value="<?= htmlspecialchars($_GET['search']) ?>">
+                <?php endif; ?>
+                <?php if (isset($_GET['min_price'])): ?>
+                    <input type="hidden" name="min_price" value="<?= htmlspecialchars($_GET['min_price']) ?>">
+                <?php endif; ?>
+                <?php if (isset($_GET['max_price'])): ?>
+                    <input type="hidden" name="max_price" value="<?= htmlspecialchars($_GET['max_price']) ?>">
+                <?php endif; ?>
+
+                <select name="sort" onchange="this.form.submit()">
+                    <option value="">Sort by</option>
+                    <option value="newest" <?= (isset($_GET['sort']) && $_GET['sort'] == 'newest') ? 'selected' : ''; ?>>Newest</option>
+                    <option value="low_to_high" <?= (isset($_GET['sort']) && $_GET['sort'] == 'low_to_high') ? 'selected' : ''; ?>>Price: Low to High</option>
+                    <option value="high_to_low" <?= (isset($_GET['sort']) && $_GET['sort'] == 'high_to_low') ? 'selected' : ''; ?>>Price: High to Low</option>
+                    <option value="discount" <?= (isset($_GET['sort']) && $_GET['sort'] == 'discount') ? 'selected' : ''; ?>>Biggest Discounts</option>
+                </select>
+            </form>
 
 
             <form action="" method="GET" class="price-filter-form">
+        
+                <?php if (isset($_GET['category_id']) && is_numeric($_GET['category_id'])): ?>
+                    <input type="hidden" name="category_id" value="<?= (int)$_GET['category_id'] ?>">
+                <?php endif; ?>
+
+                <?php if (!empty($_GET['search'])): ?>
+                    <input type="hidden" name="search" value="<?= htmlspecialchars($_GET['search']) ?>">
+                <?php endif; ?>
+
+                <?php if (!empty($_GET['sort'])): ?>
+                    <input type="hidden" name="sort" value="<?= htmlspecialchars($_GET['sort']) ?>">
+                <?php endif; ?>
+
                 <input type="number" name="min_price" placeholder="Min" value="<?= isset($_GET['min_price']) ? htmlspecialchars($_GET['min_price']) : '' ?>">
                 <input type="number" name="max_price" placeholder="Max" value="<?= isset($_GET['max_price']) ? htmlspecialchars($_GET['max_price']) : '' ?>">
                 <button type="submit">Filter</button>
             </form>
 
-           
             <form action="" method="GET" class="search-form">
+                <?php if (isset($_GET['category_id']) && is_numeric($_GET['category_id'])): ?>
+                    <input type="hidden" name="category_id" value="<?= (int)$_GET['category_id'] ?>">
+                <?php endif; ?>
+
+                <?php if (!empty($_GET['sort'])): ?>
+                    <input type="hidden" name="sort" value="<?= htmlspecialchars($_GET['sort']) ?>">
+                <?php endif; ?>
+
+                <?php if (isset($_GET['min_price']) && $_GET['min_price'] !== ''): ?>
+                    <input type="hidden" name="min_price" value="<?= htmlspecialchars($_GET['min_price']) ?>">
+                <?php endif; ?>
+                <?php if (isset($_GET['max_price']) && $_GET['max_price'] !== ''): ?>
+                    <input type="hidden" name="max_price" value="<?= htmlspecialchars($_GET['max_price']) ?>">
+                <?php endif; ?>
+
                 <input type="text" name="search" placeholder="Search books..." value="<?= isset($_GET['search']) ? htmlspecialchars($_GET['search']) : '' ?>">
             </form>
         </div>
@@ -284,83 +328,102 @@ $select_products->execute();
                 ?>
             </div>
             <?php
+
             $countQuery = "SELECT COUNT(*) FROM `products`";
             $whereConditions = [];
+            $params = [];
 
-          
             if (!empty($search)) {
                 $whereConditions[] = "name LIKE :search";
+                $params[':search'] = "%$search%";
+            }
+
+            if (isset($_GET['category_id']) && is_numeric($_GET['category_id'])) {
+                $whereConditions[] = "category_id = :category_id";
+                $params[':category_id'] = (int)$_GET['category_id'];
             }
 
             if ($min_price !== null && $max_price !== null) {
                 $whereConditions[] = "(CASE WHEN discount_price > 0 THEN discount_price ELSE price END) BETWEEN :min_price AND :max_price";
+                $params[':min_price'] = $min_price;
+                $params[':max_price'] = $max_price;
             } elseif ($min_price !== null) {
                 $whereConditions[] = "(CASE WHEN discount_price > 0 THEN discount_price ELSE price END) >= :min_price";
+                $params[':min_price'] = $min_price;
             } elseif ($max_price !== null) {
                 $whereConditions[] = "(CASE WHEN discount_price > 0 THEN discount_price ELSE price END) <= :max_price";
+                $params[':max_price'] = $max_price;
             }
 
-         
             if (!empty($whereConditions)) {
                 $countQuery .= " WHERE " . implode(" AND ", $whereConditions);
             }
 
             $countStmt = $conn->prepare($countQuery);
-
-            if (!empty($search)) {
-                $searchTerm = "%$search%";
-                $countStmt->bindParam(':search', $searchTerm, PDO::PARAM_STR);
+            foreach ($params as $key => $value) {
+                $countStmt->bindValue($key, $value);
             }
-
-            if ($min_price !== null) {
-                $countStmt->bindParam(':min_price', $min_price, PDO::PARAM_STR);
-            }
-
-            if ($max_price !== null) {
-                $countStmt->bindParam(':max_price', $max_price, PDO::PARAM_STR);
-            }
-
             $countStmt->execute();
             $total_products = $countStmt->fetchColumn();
 
-            $total_pages = ($total_products > 0) ? ceil($total_products / $limit) : 1;
+
+            $total_pages = max(1, ceil($total_products / $limit));
             if ($page > $total_pages) {
                 $page = 1;
             }
             $offset = max(0, ($page - 1) * $limit);
-
-
             ?>
 
             <div class="pagination">
-                <?php if ($page > 1): ?>
-                    <a href="?page=<?= $page - 1; ?><?= !empty($search) ? '&search=' . htmlspecialchars($search) : '' ?><?= !empty($sort) ? '&sort=' . htmlspecialchars($sort) : '' ?><?= $min_price !== null ? '&min_price=' . htmlspecialchars($min_price) : '' ?><?= $max_price !== null ? '&max_price=' . htmlspecialchars($max_price) : '' ?>">Previous</a>
-                <?php endif; ?>
-
                 <?php
-                
-                $start = max(1, $page - 1);
-                $end = min($total_pages, $page + 1);
+                $queryString = '';
+                if (!empty($search)) $queryString .= '&search=' . urlencode($search);
+                if (!empty($sort)) $queryString .= '&sort=' . urlencode($sort);
+                if ($min_price !== null) $queryString .= '&min_price=' . urlencode($min_price);
+                if ($max_price !== null) $queryString .= '&max_price=' . urlencode($max_price);
+                if (!empty($_GET['category_id'])) $queryString .= '&category_id=' . (int)$_GET['category_id'];
 
-                
-                if ($page == 1) {
-                    $start = 1;
-                    $end = min(3, $total_pages);
+
+                if ($total_pages > 1) {
+
+                    if ($page > 1) {
+                        echo '<a href="?page=' . ($page - 1) . $queryString . '">Previous</a>';
+                    }
+
+
+                    $start = max(1, $page - 2);
+                    $end = min($total_pages, $page + 2);
+
+
+                    if ($page <= 3) {
+                        $end = min(5, $total_pages);
+                    } elseif ($page >= $total_pages - 2) {
+                        $start = max(1, $total_pages - 4);
+                    }
+
+
+                    if ($start > 1) {
+                        echo '<a href="?page=1' . $queryString . '">1</a>';
+                        if ($start > 2) echo '<span>...</span>';
+                    }
+
+
+                    for ($i = $start; $i <= $end; $i++) {
+                        echo '<a href="?page=' . $i . $queryString . '"' . ($page == $i ? ' class="active"' : '') . '>' . $i . '</a>';
+                    }
+
+
+                    if ($end < $total_pages) {
+                        if ($end < $total_pages - 1) echo '<span>...</span>';
+                        echo '<a href="?page=' . $total_pages . $queryString . '">' . $total_pages . '</a>';
+                    }
+
+
+                    if ($page < $total_pages) {
+                        echo '<a href="?page=' . ($page + 1) . $queryString . '">Next</a>';
+                    }
                 }
-
-          
-                if ($page == $total_pages) {
-                    $start = max(1, $total_pages - 2);
-                    $end = $total_pages;
-                }
-
-                for ($i = $start; $i <= $end; $i++): ?>
-                    <a href="?page=<?= $i; ?><?= !empty($search) ? '&search=' . htmlspecialchars($search) : '' ?><?= !empty($sort) ? '&sort=' . htmlspecialchars($sort) : '' ?><?= $min_price !== null ? '&min_price=' . htmlspecialchars($min_price) : '' ?><?= $max_price !== null ? '&max_price=' . htmlspecialchars($max_price) : '' ?>" class="<?= ($page == $i) ? 'active' : ''; ?>"><?= $i; ?></a>
-                <?php endfor; ?>
-
-                <?php if ($page < $total_pages): ?>
-                    <a href="?page=<?= $page + 1; ?><?= !empty($search) ? '&search=' . htmlspecialchars($search) : '' ?><?= !empty($sort) ? '&sort=' . htmlspecialchars($sort) : '' ?><?= $min_price !== null ? '&min_price=' . htmlspecialchars($min_price) : '' ?><?= $max_price !== null ? '&max_price=' . htmlspecialchars($max_price) : '' ?>">Next</a>
-                <?php endif; ?>
+                ?>
             </div>
         </section>
 
@@ -393,7 +456,7 @@ $select_products->execute();
     <script>
         document.querySelector('.search-form input').addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
-                this.form.submit(); 
+                this.form.submit();
             }
         });
     </script>

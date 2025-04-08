@@ -1,24 +1,23 @@
 <?php
-// Filloni sesionin nëse nuk është aktiv
+
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-// Përfshini lidhjen me bazën e të dhënave
+
 include_once 'components/connection.php';
 
-// Kontrolloni nëse përdoruesi është i identifikuar
+
 if (isset($_SESSION['user_id'])) {
     $user_id = $_SESSION['user_id'];
 } else {
     $user_id = '';
 }
 
-// Inicializoni mesazhet
 $success_msg = [];
 $warning_msg = [];
 
-// Procesoni daljen
+
 if (isset($_POST['logout'])) {
     session_destroy();
     header('Location: login.php');
@@ -98,7 +97,7 @@ if (isset($_POST['logout'])) {
                             }
                         }
                     } else {
-                        echo '<p class="empty">No orders takes placed yet.</p>'; // Mesazhi nëse nuk ka porosi
+                        echo '<p class="empty">No orders takes placed yet.</p>'; 
                     }
                         ?>
 
@@ -110,9 +109,9 @@ if (isset($_POST['logout'])) {
         <?php include 'components/footer.php'; ?>
     </div>
 
-    <!-- JavaScript files -->
+
     <script>
-        // Funksioni për të shfaqur mesazhet
+    
         function showAlert(type, message) {
             Swal.fire({
                 icon: type,
@@ -122,7 +121,7 @@ if (isset($_POST['logout'])) {
             });
         }
 
-        // Kontrolloni nëse ka mesazhe suksesi ose paralajmërimi
+      
         <?php if (!empty($success_msg)): ?>
             <?php foreach ($success_msg as $msg): ?>
                 showAlert('success', '<?php echo $msg; ?>');

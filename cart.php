@@ -1,24 +1,22 @@
 <?php
-// Filloni sesionin nëse nuk është aktiv
+
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-// Përfshini lidhjen me bazën e të dhënave
+
 include_once 'components/connection.php';
 
-// Kontrolloni nëse përdoruesi është i identifikuar
 if(isset($_SESSION['user_id'])){
     $user_id = $_SESSION['user_id'];
 } else {
     $user_id = '';
 }
 
-// Inicializoni mesazhet
 $success_msg = [];
 $warning_msg = [];
 
-// Procesoni daljen
+
 if(isset($_POST['logout'])){
     session_destroy();
     header('Location: login.php');
@@ -132,7 +130,7 @@ if(isset($_POST['empty_cart'])){
                          }
                         }
                     }else {
-                        echo '<p class="empty">No products added yet.</p>'; // Mesazhi nëse nuk ka produkte
+                        echo '<p class="empty">No products added yet.</p>'; 
                     }
                 ?>
             </div>
@@ -159,9 +157,9 @@ if(isset($_POST['empty_cart'])){
         <?php include 'components/footer.php'; ?>
     </div>
 
-    <!-- JavaScript files -->
+
     <script>
-    // Funksioni për të shfaqur mesazhet
+  
         function showAlert(type, message) {
             Swal.fire({
                 icon: type,
@@ -171,7 +169,6 @@ if(isset($_POST['empty_cart'])){
             });
         }
 
-        // Kontrolloni nëse ka mesazhe suksesi ose paralajmërimi
         <?php if (!empty($success_msg)): ?>
             <?php foreach ($success_msg as $msg): ?>
                 showAlert('success', '<?php echo $msg; ?>');

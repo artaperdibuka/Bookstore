@@ -79,14 +79,12 @@ document.addEventListener('DOMContentLoaded', function() {
         const isMessageValid = validateMessage();
     
         if (isNameValid && isEmailValid && isNumberValid && isMessageValid) {
-            // Përdorni window.Swal
             window.Swal.fire({
                 icon: 'success',
                 title: 'Message Sent!',
                 text: 'Your message has been successfully sent.',
                 confirmButtonText: 'OK'
             }).then(() => {
-                // Zbraz fushat pas klikimit OK
                 nameInput.value = '';
                 emailInput.value = '';
                 numberInput.value = '';

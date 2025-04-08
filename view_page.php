@@ -1,44 +1,43 @@
 <?php 
-// Filloni sesionin nëse nuk është aktiv
+
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-// Përfshini lidhjen me bazën e të dhënave
+
 include_once 'components/connection.php';
 
-// Kontrolloni nëse përdoruesi është i identifikuar
+
 if(isset($_SESSION['user_id'])){
     $user_id = $_SESSION['user_id'];
 } else {
     $user_id = '';
 }
 
-// Inicializoni mesazhet
+
 $success_msg = [];
 $warning_msg = [];
 
-// Procesoni daljen
+
 if(isset ($_POST['logout'])){
     session_destroy();
     header('Location: login.php');
     exit();
 }
 
-// Shtimi i produkteve në wishlist
+
 if(isset($_POST['add_to_wishlist'])){
-    $id = uniqueid(); // Krijoni një ID unike për wishlist
+    $id = uniqueid(); 
     $product_id = $_POST['product_id'];
 
-    // Kontrolloni nëse përdoruesi është i identifikuar
     if (empty($user_id)) {
         $warning_msg[] = 'Please log in to add products to your wishlist.';
     } else {
-        // Kontrolloni nëse produkti është tashmë në wishlist
+      
         $varify_wishlist = $conn->prepare("SELECT * FROM `wishlist` WHERE user_id = ? AND product_id = ?");
         $varify_wishlist->execute([$user_id, $product_id]);
 
-        // Kontrolloni nëse produkti është në karrocë
+        
         $cart_num = $conn->prepare("SELECT * FROM `cart` WHERE user_id = ? AND product_id = ?");
         $cart_num->execute([$user_id, $product_id]);
 
@@ -48,12 +47,11 @@ if(isset($_POST['add_to_wishlist'])){
         else if($cart_num->rowCount() > 0){
             $warning_msg[] = 'Product already exists in your cart';
         } else {
-            // Merrni çmimin e produktit
+          
             $select_price = $conn->prepare("SELECT * FROM `products` WHERE id = ? LIMIT 1");
             $select_price->execute([$product_id]);
             $fetch_price = $select_price->fetch(PDO::FETCH_ASSOC);
-            
-            // Shtoni produktin në wishlist
+          
             $insert_wishlist = $conn->prepare("INSERT INTO `wishlist`(id, user_id, product_id, price) VALUES (?, ?, ?, ?)");
             $insert_wishlist->execute([$id, $user_id, $product_id, $fetch_price['price']]);
             $success_msg[] = 'Product added to wishlist successfully';
@@ -62,22 +60,21 @@ if(isset($_POST['add_to_wishlist'])){
 }
 
 if(isset($_POST['add_to_cart'])){
-    $id = uniqueid(); // Krijoni një ID unike për wishlist
+    $id = uniqueid(); 
     $product_id = $_POST['product_id'];
 
-    // Kontrolloni nëse përdoruesi është i identifikuar
     if (empty($user_id)) {
         $warning_msg[] = 'Please log in to add products to your wishlist.';
     } else {
         $qty = $_POST['qty'];
         $qty = filter_var($qty, FILTER_SANITIZE_STRING);
-        // Kontrolloni nëse produkti është tashmë në wishlist
+   
         $varify_cart = $conn->prepare("SELECT * FROM `cart` WHERE user_id = ? AND product_id = ?");
         $varify_cart->execute([$user_id, $product_id]);
 
         $max_cart_items = $conn->prepare("SELECT * FROM `cart` WHERE user_id = ?");
         $max_cart_items->execute([$user_id]);
-        // Kontrolloni nëse produkti është në karrocë
+      
         
 
         if($varify_cart->rowCount() > 0){
@@ -86,12 +83,11 @@ if(isset($_POST['add_to_cart'])){
         else if($max_cart_items->rowCount() > 20){
             $warning_msg[] = 'cart is full';
         } else {
-            // Merrni çmimin e produktit
+   
             $select_price = $conn->prepare("SELECT * FROM `products` WHERE id = ? LIMIT 1");
             $select_price->execute([$product_id]);
             $fetch_price = $select_price->fetch(PDO::FETCH_ASSOC);
-            
-            // Shtoni produktin në wishlist
+         
             $insert_cart = $conn->prepare("INSERT INTO `cart`(id, user_id, product_id, price, qty) VALUES (?, ?, ?, ? ,?)");
             $insert_cart->execute([$id, $user_id, $product_id, $fetch_price['price'], $qty]);
             $success_msg[] = 'Product added to cart successfully';
@@ -159,9 +155,9 @@ if(isset($_POST['add_to_cart'])){
         <?php include 'components/footer.php'; ?>
     </div>
 
-    <!-- JavaScript files -->
+
     <script>
-    // Funksioni për të shfaqur mesazhet
+    
         function showAlert(type, message) {
             Swal.fire({
                 icon: type,
@@ -171,7 +167,7 @@ if(isset($_POST['add_to_cart'])){
             });
         }
 
-        // Kontrolloni nëse ka mesazhe suksesi ose paralajmërimi
+   
         <?php if (!empty($success_msg)): ?>
             <?php foreach ($success_msg as $msg): ?>
                 showAlert('success', '<?php echo $msg; ?>');

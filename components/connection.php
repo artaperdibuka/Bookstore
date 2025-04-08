@@ -1,6 +1,6 @@
 <?php
 if (session_status() == PHP_SESSION_NONE) {
-    session_start(); // Vetëm nëse sesioni nuk është aktiv
+    session_start(); 
 }
 
 $db_name = "mysql:host=localhost;dbname=shop_db";

@@ -1,6 +1,6 @@
 <?php 
     if (session_status() == PHP_SESSION_NONE) {
-        session_start(); // Vetëm nëse sesioni nuk është aktiv
+        session_start(); 
     }
     include 'components/connection.php';
 
@@ -126,7 +126,7 @@
         </div>
        </section>
 
-      <?php include 'components/footer.php'?> <!-- Vendosim footer-in këtu -->
+      <?php include 'components/footer.php'?> 
     </div>
     <script scr="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
     <script src="script.js"></script>
