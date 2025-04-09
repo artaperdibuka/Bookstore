@@ -97,6 +97,14 @@ if (isset($_POST['place_order'])) {
     
 }
 
+$get_cart_items = $conn->prepare("SELECT product_id, qty FROM cart WHERE user_id = ?");
+$get_cart_items->execute([$user_id]);
+
+while($item = $get_cart_items->fetch(PDO::FETCH_ASSOC)) {
+    $update_stock = $conn->prepare("UPDATE products SET quantity = quantity - ? WHERE id = ?");
+    $update_stock->execute([$item['qty'], $item['product_id']]);
+}
+
 
 ?>
 
@@ -254,7 +262,7 @@ if (isset($_POST['place_order'])) {
 
     <!-- JavaScript files -->
     <script>
-        // Funksioni për të shfaqur mesazhet
+       
         function showAlert(type, message) {
             Swal.fire({
                 icon: type,
@@ -264,7 +272,7 @@ if (isset($_POST['place_order'])) {
             });
         }
 
-        // Kontrolloni nëse ka mesazhe suksesi ose paralajmërimi
+     
         <?php if (!empty($success_msg)): ?>
             <?php foreach ($success_msg as $msg): ?>
                 showAlert('success', '<?php echo $msg; ?>');

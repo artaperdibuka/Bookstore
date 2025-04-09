@@ -50,8 +50,9 @@ if (isset($_POST['add_to_wishlist'])) {
             $select_price->execute([$product_id]);
             $fetch_price = $select_price->fetch(PDO::FETCH_ASSOC);
 
-            $insert_wishlist = $conn->prepare("INSERT INTO `wishlist`(id, user_id, product_id, price) VALUES (?, ?, ?, ?)");
-            $insert_wishlist->execute([$id, $user_id, $product_id, $fetch_price['price']]);
+            $insert_wishlist = $conn->prepare("INSERT INTO `wishlist`(user_id, product_id, price) VALUES (?, ?, ?)");
+            $insert_wishlist->execute([$user_id, $product_id, $fetch_price['price']]);
+
             $success_msg[] = 'Product added to wishlist successfully';
         }
     }
@@ -60,38 +61,68 @@ if (isset($_POST['add_to_wishlist'])) {
 if (isset($_POST['add_to_cart'])) {
     $id = uniqueid();
     $product_id = filter_var($_POST['product_id'], FILTER_SANITIZE_NUMBER_INT);
-
+    $qty = filter_var($_POST['qty'], FILTER_SANITIZE_NUMBER_INT);
 
     if (empty($user_id)) {
-        $warning_msg[] = 'Please log in to add products to your wishlist.';
+        $warning_msg[] = 'Please log in to add products to your cart.';
     } else {
-        $qty = $_POST['qty'];
-        $qty = filter_var($qty, FILTER_SANITIZE_STRING);
+        $check_stock = $conn->prepare("SELECT quantity FROM products WHERE id = ?");
+        $check_stock->execute([$product_id]);
+        $product_stock = $check_stock->fetch(PDO::FETCH_ASSOC);
 
-        $varify_cart = $conn->prepare("SELECT * FROM `cart` WHERE user_id = ? AND product_id = ?");
-        $varify_cart->execute([$user_id, $product_id]);
-
-        $max_cart_items = $conn->prepare("SELECT * FROM `cart` WHERE user_id = ?");
-        $max_cart_items->execute([$user_id]);
-
-
-        if ($varify_cart->rowCount() > 0) {
-            $warning_msg[] = 'Product already exists in your cart';
-        } else if ($max_cart_items->rowCount() > 20) {
-            $warning_msg[] = 'cart is full';
+        if (!$product_stock) {
+            $warning_msg[] = 'Product not found!';
+        } elseif ($product_stock['quantity'] <= 0) {
+            $warning_msg[] = 'This product is out of stock!';
+        } elseif ($qty > $product_stock['quantity']) {
+            $warning_msg[] = 'Only ' . $product_stock['quantity'] . ' items available!';
         } else {
+            $verify_cart = $conn->prepare("SELECT id, qty FROM `cart` WHERE user_id = ? AND product_id = ?");
+            $verify_cart->execute([$user_id, $product_id]);
+            $existing_item = $verify_cart->fetch(PDO::FETCH_ASSOC);
 
-            $select_price = $conn->prepare("SELECT * FROM `products` WHERE id = ? LIMIT 1");
-            $select_price->execute([$product_id]);
-            $fetch_price = $select_price->fetch(PDO::FETCH_ASSOC);
+            if ($existing_item) {
 
+                $new_total_qty = $existing_item['qty'] + $qty;
 
-            $insert_cart = $conn->prepare("INSERT INTO `cart`(id, user_id, product_id, price, qty) VALUES (?, ?, ?, ? ,?)");
-            $insert_cart->execute([$id, $user_id, $product_id, $fetch_price['price'], $qty]);
-            $success_msg[] = 'Product added to cart successfully';
+                if ($new_total_qty > $product_stock['quantity']) {
+                    $warning_msg[] = 'Cannot add more than available stock!';
+                } else {
+                    $update_cart = $conn->prepare("UPDATE `cart` SET qty = ? WHERE id = ?");
+                    if ($update_cart->execute([$new_total_qty, $existing_item['id']])) {
+                        $success_msg[] = 'Cart quantity updated successfully';
+                    }
+                }
+            } else {
+
+                $cart_count = $conn->prepare("SELECT COUNT(*) FROM `cart` WHERE user_id = ?");
+                $cart_count->execute([$user_id]);
+
+                if ($cart_count->fetchColumn() >= 20) {
+                    $warning_msg[] = 'Your cart is full (max 20 items)';
+                } else {
+
+                    $select_price = $conn->prepare("SELECT price FROM `products` WHERE id = ? LIMIT 1");
+                    $select_price->execute([$product_id]);
+                    $product_price = $select_price->fetchColumn();
+
+                    if ($product_price === false) {
+                        $warning_msg[] = 'Could not retrieve product price';
+                    } else {
+
+                        $insert_cart = $conn->prepare("INSERT INTO `cart`(id, user_id, product_id, price, qty) VALUES (?, ?, ?, ?, ?)");
+                        if ($insert_cart->execute([$id, $user_id, $product_id, $product_price, $qty])) {
+                            $success_msg[] = 'Product added to cart successfully';
+                        } else {
+                            $warning_msg[] = 'Failed to add product to cart';
+                        }
+                    }
+                }
+            }
         }
     }
 }
+
 $limit = 8;
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 $offset = max(0, ($page - 1) * $limit);
@@ -225,7 +256,7 @@ $select_products->execute();
         <div class="filter-container">
 
             <form action="" method="GET" class="sort-form">
-            
+
                 <?php if (isset($_GET['category_id']) && is_numeric($_GET['category_id'])): ?>
                     <input type="hidden" name="category_id" value="<?= (int)$_GET['category_id'] ?>">
                 <?php endif; ?>
@@ -251,7 +282,7 @@ $select_products->execute();
 
 
             <form action="" method="GET" class="price-filter-form">
-        
+
                 <?php if (isset($_GET['category_id']) && is_numeric($_GET['category_id'])): ?>
                     <input type="hidden" name="category_id" value="<?= (int)$_GET['category_id'] ?>">
                 <?php endif; ?>
@@ -293,19 +324,34 @@ $select_products->execute();
         <section class="products">
             <div class="box-container">
                 <?php
-
                 if ($select_products && $select_products->rowCount() > 0) {
                     while ($fetch_products = $select_products->fetch(PDO::FETCH_ASSOC)) {
+                        $quantity = $fetch_products['quantity'];
+                        $fewItemsLeft = $quantity <= 3 && $quantity > 0;
+                        $outOfStock = $quantity <= 0;
                 ?>
                         <form action="" method="post" class="box">
+                            <?php if ($outOfStock): ?>
+                                <div class="out-of-stock-label">OUT OF STOCK</div>
+                            <?php elseif ($fewItemsLeft): ?>
+                                <div class="few-items">Only <?= $quantity ?> left!</div>
+                            <?php endif; ?>
+
                             <img src="image/<?= $fetch_products['image']; ?>" class="img" alt="Product Image">
+
                             <div class="button">
-                                <button type="submit" name="add_to_cart"><i class="bx bx-cart"></i></button>
-                                <button type="submit" name="add_to_wishlist"><i class="bx bx-heart"></i></button>
-                                <a href="view_page.php?pid=<?php echo $fetch_products['id']; ?>" class="bx bxs-show"></a>
+                                <button type="submit" name="add_to_cart" <?= $outOfStock ? 'disabled' : '' ?>>
+                                    <i class="bx bx-cart"></i>
+                                </button>
+                                <button type="submit" name="add_to_wishlist">
+                                    <i class="bx bx-heart"></i>
+                                </button>
+                                <a href="view_page.php?pid=<?= $fetch_products['id']; ?>" class="bx bxs-show"></a>
                             </div>
+
                             <h3 class="name"><?= $fetch_products['name']; ?></h3>
                             <input type="hidden" name="product_id" value="<?= $fetch_products['id']; ?>">
+
                             <div class="flex">
                                 <p class="price">
                                     <?php if ($fetch_products['discount_price'] > 0): ?>
@@ -316,14 +362,17 @@ $select_products->execute();
                                     <?php endif; ?>
                                 </p>
 
-                                <input type="number" name="qty" required min="1" value="1" max="99" maxlength="2" class="qty">
+                                <?php if (!$outOfStock): ?>
+                                    <input type="number" name="qty" required min="1"
+                                        value="1" max="<?= $quantity ?>"
+                                        maxlength="2" class="qty">
+                                <?php endif; ?>
                             </div>
-                            <a href="checkout.php?get_id=<?= $fetch_products['id']; ?>" class="btn">buy now</a>
+
+                            <a href="checkout.php?get_id=<?= $fetch_products['id']; ?>" class="btn" <?= $outOfStock ? 'style="pointer-events: none; opacity: 0.5;"' : '' ?>>buy now</a>
                         </form>
                 <?php
                     }
-                } else {
-                    echo '<p class="empty">No products added yet.</p>';
                 }
                 ?>
             </div>
