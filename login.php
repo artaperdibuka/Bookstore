@@ -8,26 +8,49 @@ include 'components/connection.php';
 $message = [];
 
 if (isset($_POST['submit'])) {
-
-    $email = $_POST['email'];
     $email = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
-    $pass = $_POST['pass'];
     $pass = filter_var($_POST['pass'], FILTER_SANITIZE_STRING);
-   
 
-
-    $select_user = $conn->prepare("SELECT * FROM `users` WHERE email = ? AND password = ?");
-    $select_user->execute([$email, $pass]);
-    $row = $select_user->fetch(PDO::FETCH_ASSOC);
-
-    if($select_user->rowCount() > 0){
-        $_SESSION['user_id'] = $row['id'];
-        $_SESSION['user_name'] = $row['name'];
-        $_SESSION['user_email'] = $row['email'];
-        header('location: home.php');
-
-    }else{
-        $message[] = 'Incorret username or passwoerd';
+    // Së pari kontrollo nëse është admin
+    $select_admin = $conn->prepare("SELECT * FROM `admin` WHERE email = ? AND password = ?");
+    $select_admin->execute([$email, $pass]);
+    
+    if($select_admin->rowCount() > 0){
+        $admin_row = $select_admin->fetch(PDO::FETCH_ASSOC);
+        $_SESSION['admin_id'] = $admin_row['id'];
+        $_SESSION['admin_name'] = $admin_row['name'];
+        $_SESSION['admin_email'] = $admin_row['email'];
+        
+        // Pastro çdo session të userit nëse ekziston
+        unset($_SESSION['user_id']);
+        unset($_SESSION['user_name']);
+        unset($_SESSION['user_email']);
+        
+        header('location: dashboard.php');
+        exit;
+    }
+    else {
+        // Nëse nuk është admin, kontrollo nëse është user i rregullt
+        $select_user = $conn->prepare("SELECT * FROM `users` WHERE email = ? AND password = ?");
+        $select_user->execute([$email, $pass]);
+        
+        if($select_user->rowCount() > 0){
+            $row = $select_user->fetch(PDO::FETCH_ASSOC);
+            $_SESSION['user_id'] = $row['id'];
+            $_SESSION['user_name'] = $row['name'];
+            $_SESSION['user_email'] = $row['email'];
+            
+            // Pastro çdo session të adminit nëse ekziston
+            unset($_SESSION['admin_id']);
+            unset($_SESSION['admin_name']);
+            unset($_SESSION['admin_email']);
+            
+            header('location: home.php');
+            exit;
+        }
+        else {
+            $message[] = 'Email ose password i gabuar!';
+        }
     }
 }
 ?>
@@ -65,8 +88,15 @@ if (isset($_POST['submit'])) {
         
                 <input type="submit" name="submit" value="login now" class="btn">
                 <p>do not have an account?<a href="register.php">register now</a></p>
-
+<?php
+if (!empty($message)) {
+    foreach ($message as $msg) {
+        echo '<div class="error-message">'.$msg.'</div>';
+    }
+}
+?>
             </form>
+
 
         </section>
 
