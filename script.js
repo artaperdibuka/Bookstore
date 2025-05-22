@@ -18,6 +18,8 @@ userBtn.addEventListener('click', function(){
     let userBox = document.querySelector('.user-box');
     userBox.classList.toggle('active');
 })
+
+
 "use strict";
 
 const leftArrow = document.querySelector('.left-arrow .bxs-left-arrow'),
@@ -47,54 +49,33 @@ function scrollLeft(){
     })
 }
 
-let timerId = setInterval(scrollRight, 7000);
 
-// Reset timer to scroll right
-function resetTimer(){
-    clearInterval(timerId);
-    timerId = setInterval(scrollRight, 7000);
+function startAutoSlide() {
+    autoSlideInterval = setInterval(scrollRight, 7000); // Lëvizje automatike çdo 7 sekonda
 }
+
+function stopAutoSlide() {
+    clearInterval(autoSlideInterval);
+}
+
+function resetAutoSlide() {
+    stopAutoSlide();
+    startAutoSlide();
+}
+slider.addEventListener('mouseenter', stopAutoSlide);
+slider.addEventListener('mouseleave', startAutoSlide);
+
 
 // Scroll event
 slider.addEventListener('click', function(ev){
-    if(ev.target === leftArrow){
+    if(ev.target === leftArrow) {
         scrollLeft();
-        resetTimer();
-    }
-})
-
-slider.addEventListener('click', function(ev){
-    if(ev.target === rightArrow){
+    } else if (ev.target === rightArrow) {
         scrollRight();
-        resetTimer();
     }
-})
-
-// Shop Slider
-document.addEventListener('DOMContentLoaded', () => {
-    const promoVideo = document.getElementById('promoVideo');
-    const videoControlBtn = document.getElementById('videoControlBtn');
-
-    // Event listener për butonin Play/Pause
-    videoControlBtn.addEventListener('click', () => {
-        if (promoVideo.paused) {
-            promoVideo.play();
-            videoControlBtn.classList.remove('play');
-            videoControlBtn.classList.add('pause');
-        } else {
-            promoVideo.pause();
-            videoControlBtn.classList.remove('pause');
-            videoControlBtn.classList.add('play');
-        }
-    });
-
-    // Vendos klasën fillestare bazuar në gjendjen e videos
-    if (promoVideo.paused) {
-        videoControlBtn.classList.add('play');
-    } else {
-        videoControlBtn.classList.add('pause');
-    }
+    resetTimer();
 });
+
 
 
 const leftArrowShop = document.querySelector('.shop-left-arrow'),
@@ -103,13 +84,13 @@ const leftArrowShop = document.querySelector('.shop-left-arrow'),
     boxContainer = document.querySelector('.shop-slider .box-container');
 
 let currentPosition = 0;
-const boxWidth = 20; // 20% për secilin libër
-const visibleBooks = 5; // Numri i librave të dukshëm njëkohësisht
+const boxWidth = 20; 
+const visibleBooks = 5; 
 let totalBooks;
 let autoSlideInterval;
 
-const gapWidth = 2; // 2% për hapsirën midis box-eve
-const totalWidthPerBox = boxWidth + gapWidth; // Gjerësia totale për secilin box duke përfshirë hapsirën
+const gapWidth = 2;
+const totalWidthPerBox = boxWidth + gapWidth; 
 
 function updateSliderPosition(animate) {
     if (animate) {
@@ -120,7 +101,7 @@ function updateSliderPosition(animate) {
 
     boxContainer.style.transform = `translateX(-${currentPosition * totalWidthPerBox}%)`;
 
-    // Kontrollo për reset
+
     if (currentPosition >= totalBooks + visibleBooks) {
         setTimeout(() => {
             currentPosition = visibleBooks;
@@ -136,44 +117,37 @@ function updateSliderPosition(animate) {
     }
 }
 
-// Funksioni për të inicializuar slider-in
+
 function setupInfiniteSlider() {
     const originalBoxes = document.querySelectorAll('.shop-slider .box');
     totalBooks = originalBoxes.length;
 
-    // Klono librat në fillim dhe në fund për të krijuar efektin e pafundësisë
     for (let i = 0; i < visibleBooks; i++) {
-        boxContainer.appendChild(originalBoxes[i].cloneNode(true)); // Klono në fund
+        boxContainer.appendChild(originalBoxes[i].cloneNode(true));
         boxContainer.insertBefore(originalBoxes[totalBooks - 1 - i].cloneNode(true), boxContainer.firstChild); // Klono në fillim
     }
 
-    // Fshi çdo përzierje vizuale gjatë inicializimit
-    boxContainer.style.opacity = '0'; // Fshihni përkohësisht slider-in
+    boxContainer.style.opacity = '0'; 
 
-    // Vendos pozicionin fillestar pas përfundimit të klonimit
     setTimeout(() => {
         currentPosition = visibleBooks;
-        updateSliderPosition(false); // Përditësoni pozicionin pa animacion
+        updateSliderPosition(false); 
 
-        // Rikthe slider-in me opacity 1 pas përfundimit të klonimit
         boxContainer.style.opacity = '1';
-    }, 300); // Jepni pak kohë për të përfunduar klonimin dhe rregullimet
+    }, 300); 
 }
 
 
-// Funksioni për të lëvizur slider-in djathtas
 function scrollRightShop() {
     currentPosition++;
     updateSliderPosition(true);
 }
 
-// Funksioni për të lëvizur slider-in majtas
 function scrollLeftShop() {
     currentPosition--;
     updateSliderPosition(true);
 }
 
-// Funksioni për të përditësuar pozicionin e slider-it
 function updateSliderPosition(animate) {
     if (animate) {
         boxContainer.style.transition = 'transform 0.5s ease-in-out';
@@ -183,7 +157,6 @@ function updateSliderPosition(animate) {
 
     boxContainer.style.transform = `translateX(-${currentPosition * boxWidth}%)`;
 
-    // Kontrollo për reset
     if (currentPosition >= totalBooks + visibleBooks) {
         setTimeout(() => {
             currentPosition = visibleBooks;
@@ -199,23 +172,21 @@ function updateSliderPosition(animate) {
     }
 }
 
-// Funksioni për të filluar lëvizjen automatike
 function startAutoSlide() {
-    autoSlideInterval = setInterval(scrollRightShop, 7000); // Lëvizje automatike çdo 7 sekonda
+    autoSlideInterval = setInterval(scrollRightShop, 7000); 
 }
 
-// Funksioni për të ndaluar lëvizjen automatike
+
 function stopAutoSlide() {
     clearInterval(autoSlideInterval);
 }
 
-// Funksioni për të rivendosur lëvizjen automatike
+
 function resetAutoSlide() {
     stopAutoSlide();
     startAutoSlide();
 }
 
-// Event Listeners për shigjetat
 leftArrowShop.addEventListener('click', () => {
     scrollLeftShop();
     resetAutoSlide();
@@ -226,11 +197,11 @@ rightArrowShop.addEventListener('click', () => {
     resetAutoSlide();
 });
 
-// Event Listeners për lëvizjen automatike
+
 shopSlider.addEventListener('mouseenter', stopAutoSlide);
 shopSlider.addEventListener('mouseleave', startAutoSlide);
 
-// Inicializimi i slider-it
+
 setupInfiniteSlider();
 startAutoSlide();
 

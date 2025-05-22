@@ -268,6 +268,7 @@ header.scrolled {
     transform: scale(0);
     transform-origin: top right;
     line-height: 2;
+    background-color: #8b8585;
 }
 
 .header .user-box .btn {
@@ -290,75 +291,137 @@ header.scrolled {
     transition: 0.2s linear;
 }
 
-     
-/* home slide            */
-.home-section{
+
+/* home section */
+.home-section {
     position: relative;
-    margin-bottom:2rem ;
+    margin-bottom: 2rem;
+    width: 100%;
+    overflow: hidden;
 }
-.slider{
+
+.slider {
     font-family: "Roboto", sans-serif;
-    max-height: 80vh;
     width: 100%;
     display: flex;
-    overflow-x: hidden;
+    overflow-x: scroll;
     overflow-y: hidden;
     scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch; /* for smooth scrolling on iOS */
+    
 }
-.slider__slider{
-    height: 80vh;
-    min-width: 100vw;
-    width: 100%;
-    scroll-snap-align: start;
-    background-position: center center;
-    background-size: cover;
+
+.slider__slider {
     position: relative;
+    height: 80vh;
+    min-width: 100%;
+    scroll-snap-align: start;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
 }
-.slider__slider .slide-detail{
+
+.slider__slider img {
     position: absolute;
-    top: 30%;
-    left: 20%;
-    text-align: center;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    top: 0;
+    left: 0;
 }
-.slider__slider .slide-detail h1{
+
+
+.slider__slider .slide-detail {
+    position: relative;
+    width: 100%;
+    max-width: 1200px;
+    padding: 2rem;
+    text-align: center;
+    z-index: 2;
+}
+
+.slider__slider .overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4);
+    z-index: 1;
+}
+
+.slider__slider .slide-detail h1 {
     font-size: 30px;
     color: #fff;
     text-transform: uppercase;
     position: relative;
+    margin-bottom: 3rem;
 }
-.slider__slider .slide-detail h1::before{
+
+.slider__slider .slide-detail h1::before {
     position: absolute;
     content: '';
     background: #e2e2e244;
     width: 380px;
     height: 1px;
-    bottom: -40px;
-    left: 20%;
+    bottom: -20px;
+    left: 50%;
+    transform: translateX(-50%);
 }
-.slider__slider .slide-detail h1::after{
+
+.slider__slider .slide-detail h1::after {
     content: '';
     position: absolute;
     width: 10px;
     height: 10px;
     border-radius: 50%;
-    bottom: -50%;
+    bottom: -25px;
     left: 50%;
+    transform: translateX(-50%);
     background: #f7b90f;
 }
-.slider__slider .slide-detail p{
+
+.slider__slider .slide-detail p {
     font-size: 14px;
     color: #fff;
     margin-top: 2rem;
     margin-bottom: 2rem;
 }
+
+.slider__slider .btn {
+    display: inline-block;
+    padding: 12px 30px;
+    background: #f7b90f;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+.slider__slider .btn:hover {
+    background: #e6a80e;
+}
+
+
+/* Hide scrollbar */
+.slider::-webkit-scrollbar {
+    display: none;
+}
+
+.slider {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
 .slide1{
-    background-image: url('img/1.jpg');
+    background-image: url('image/BuzukuBookstore.jpeg');
 }
 .slide2{
-    background-image: url('img/2.jpg');
+    background-image: url('image/t2.png');
 }
 .slide3{
-    background-image: url('img/3.jpg');
+    background-image: url('image/recomended1.png');
 }
 .slide4{
     background-image: url('img/4.jpg');
@@ -410,6 +473,46 @@ header.scrolled {
     border-bottom: 2px solid #e2e2e255;
 
 }
+
+/*recomended*/
+
+    .box:has(.original-price) {
+        border: 2px solid #ff4757;
+        box-shadow: 0 4px 12px rgba(255, 71, 87, 0.15);
+    }
+    
+    .box:has(.original-price)::before {
+        content: "SALE";
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background-color: #ff4757;
+        color: white;
+        padding: 3px 8px;
+        border-radius: 3px;
+        font-size: 12px;
+        font-weight: bold;
+        z-index: 1;
+    }
+    
+    .price {
+        font-weight: bold;
+        color: #2f3542;
+    }
+    
+    .original-price {
+        text-decoration: line-through;
+        color: #7f8c8d;
+        font-size: 0.9em;
+        margin-right: 5px;
+    }
+    
+    .price:has(.original-price) {
+        color: #ff4757;
+        font-size: 1.1em;
+    }
+    
+
 .thumb{
     max-width: 1200px;
     box-shadow: var(--box-shadow);
@@ -1259,6 +1362,16 @@ button[disabled], .btn[disabled] {
 }
 .cart-total .button .btn{
     margin: 1rem;
+}
+.btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    background-color: #cccccc;
+    color: #666666;
+}
+
+.btn:disabled:hover {
+    background-color: #cccccc;
 }
 
 /* footer*/
