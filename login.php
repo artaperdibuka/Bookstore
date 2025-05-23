@@ -26,7 +26,7 @@ if (isset($_POST['submit'])) {
         unset($_SESSION['user_name']);
         unset($_SESSION['user_email']);
         
-        header('location: dashboard.php');
+        header('location: admin/dashboard.php');
         exit;
     }
     else {

@@ -3,7 +3,8 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-include_once 'components/connection.php';
+include_once(__DIR__ . '/../components/connection.php');
+
 
 // Kontrollo nëse është admin i loguar
 if (!isset($_SESSION['admin_id'])) {
@@ -22,7 +23,7 @@ $warning_msg = [];
 
 if (isset($_POST['logout'])) {
     session_destroy();
-    header('Location: login.php');
+    header('Location: ../login.php');
     exit();
 }
 ?>
@@ -37,11 +38,13 @@ if (isset($_POST['logout'])) {
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <title>BookstoreBuzuku Admin Panel - Dashboard Page</title>
     <style type="text/css">
-        <?php include 'style.css'; ?>
+        <?php include '../style.css'; ?>
     </style>
 </head>
 <body>
-    <?php include 'components/admin_header.php'; ?>
+   <?php include __DIR__ . '/../components/admin_header.php'; ?>
+
+
     <div class="main">
     
        <div class="tittle2">
@@ -64,7 +67,7 @@ if (isset($_POST['logout'])) {
                     ?>
                     <h3><?= $num_of_products; ?></h3>
                     <p>Products added</p>
-                    <a href="add_product.php" class="btn">Add new products</a>
+                    <a href="add_products.php" class="btn">Add new products</a>
                 </div>
                 
                
@@ -167,6 +170,6 @@ if (isset($_POST['logout'])) {
             <?php endforeach; ?>
         <?php endif; ?>
     </script>
-    <script src="script.js"></script>
+    <script src="../script.js"></script>
 </body>
 </html>

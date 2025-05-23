@@ -14,11 +14,11 @@ $admin_id = isset($_SESSION['admin_id']) ? $_SESSION['admin_id'] : null;
 
   <header class="header">
         <div class="flex">
-            <a href="dashboard.php" class="logo"><img src="img/logoo.png" height="65" width="230"></a>
+            <a href="../admin/dashboard.php" class="logo"><img src="../img/logoo.png" height="65" width="230"></a>
 
             <nav class="navbar">
                 <a href="dashboard.php">Dashboard</a>
-                <a href="add_product.php">Add Product</a>
+                <a href="add_products.php">Add Product</a>
                 <a href="view_products.php">View Products</a>
                 <a href="account.php">Account</a>
             </nav>
