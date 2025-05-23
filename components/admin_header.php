@@ -19,8 +19,9 @@ $admin_id = isset($_SESSION['admin_id']) ? $_SESSION['admin_id'] : null;
             <nav class="navbar">
                 <a href="dashboard.php">Dashboard</a>
                 <a href="add_products.php">Add Product</a>
+                <a href="add_categories.php">Add Categories</a>
                 <a href="view_products.php">View Products</a>
-                <a href="account.php">Account</a>
+                <a href="accounts.php">Account</a>
             </nav>
 
             <div class="icons">

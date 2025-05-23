@@ -150,17 +150,17 @@ if (isset($_POST['draft'])) {
             <h1 class="heading"> add products</h1>
             <form action="" method="post" enctype="multipart/form-data">
                 <div class="input-field">
-                    <label> porudct name <sup>*</sup></label>
+                    <label> porudct name</label>
                     <input type="text" name="name" maxlength="100" placeholder="Product Name" required>
 
 
                 </div>
                 <div class="input-field">
-                    <label> porudct price <sup>*</sup></label>
+                    <label> porudct price</label>
                     <input type="number" name="price" maxlength="100" placeholder="Product Price" required>
                 </div>
                 <div class="input-field">
-                    <label>category <sup>*</sup></label>
+                    <label>category</label>
                     <select name="category_id" required>
                         <option value="">Select a category</option>
                         <?php foreach ($categories as $category): ?>
@@ -169,11 +169,11 @@ if (isset($_POST['draft'])) {
                     </select>
                 </div>
                 <div class="input-field">
-                    <label> porudct detail <sup>*</sup></label>
+                    <label> porudct detail</label>
                     <textarea name="content" required maxlength="1000" placeholder="write Product description" required></textarea>
                 </div>
                 <div class="input-field">
-                    <label> porudct image <sup>*</sup></label>
+                    <label> porudct image</label>
                     <input type="file" name="image" accept="image/*" required>
                 </div>
                 <div class="flex-btn">

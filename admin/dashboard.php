@@ -110,7 +110,7 @@ if (isset($_POST['logout'])) {
                     ?>
                     <h3><?= $num_of_message; ?></h3>
                     <p>message added</p>
-                    <a href="message.php" class="btn">view message</a>
+                    <a href="admin_message.php" class="btn">view message</a>
                 </div>
                 <div class="box">
                     <?php 
@@ -142,6 +142,17 @@ if (isset($_POST['logout'])) {
                     <p>total canceled orders</p>
                     <a href="order.php" class="btn">view  canceled orders</a>
                 </div>
+                <div class="box">
+                    <?php 
+                    $select_categories = $conn->prepare("SELECT * FROM `categories`");
+                    $select_categories->execute();
+                    $num_of_categories = $select_categories->rowCount();
+                    ?>
+                    <h3><?= $num_of_categories; ?></h3>
+                    <p>categories added</p>
+                    <a href="add_categories.php" class="btn">add new accessories</a>
+                </div>
+                
 
                 
             </div>
