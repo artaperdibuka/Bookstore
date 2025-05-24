@@ -157,6 +157,16 @@ if (isset($_POST['logout'])) {
                     <p>active carts</p>
                     <a href="admin_cart.php" class="btn">view all carts</a>
                 </div>
+                <div class="box">
+                    <?php
+                    $select_subscribers = $conn->prepare("SELECT * FROM `newsletter_subscribers`");
+                    $select_subscribers->execute();
+                    $num_of_subscribers = $select_subscribers->rowCount();
+                    ?>
+                    <h3><?= $num_of_subscribers; ?></h3>
+                    <p>email subscribers</p>
+                    <a href="admin_subscribers.php" class="btn">view all subscribers</a>
+                </div>
 
                 <!-- Admin Wishlist Box -->
                 <div class="box">

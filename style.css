@@ -2176,15 +2176,15 @@ button[disabled],
 .top-footer input {
   width: 40vw;
 }
+
 footer {
-  /* background-image: url('img/0.webp'); */
   width: 100%;
   min-height: 73vh;
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-position: center;
   position: relative;
+  display: flex;
+  flex-direction: column;
 }
+
 footer .overlay {
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
   position: absolute;
@@ -2192,74 +2192,174 @@ footer .overlay {
   left: 0;
   right: 0;
   bottom: 0;
-  /* background: #000; */
-  /* opacity: 0.5; */
 }
+
 .footer-content {
-  position: absolute;
-  top: 10%;
-}
-.footer-content .img-box {
-  text-align: center;
-}
-footer .inner-footer {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
-  justify-content: center;
+  position: relative;
   width: 100%;
   max-width: 1200px;
   margin: 0 auto;
-  padding: 3rem 0;
+  padding: 2rem 1rem;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.footer-content .img-box {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+footer .inner-footer {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+  gap: 1rem;
+  width: 100%;
   color: #000;
+  margin: 0 auto;
 }
+
 footer .inner-footer .card {
-  margin: 0.5rem;
+  padding: 1rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
 }
+
+footer .inner-footer .card ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  flex-grow: 1;
+}
+
 footer .inner-footer .card li {
   cursor: pointer;
   line-height: 1.5rem;
   text-transform: capitalize;
   font-size: 16px;
+  margin: 0.5rem 0;
 }
-footer .inner-footer .card li:nth-child(1),
-footer .inner-footer .card p {
-  margin-top: 1rem;
-}
+
 footer .inner-footer .card h3 {
   text-transform: uppercase;
-}
-footer .inner-footer .card p {
   margin-bottom: 1rem;
+}
+
+footer .inner-footer .card p {
+  margin: 1rem 0;
   font-size: 16px;
 }
+
 footer .inner-footer .card .social-links {
-  margin-top: 1rem;
+  margin-top: auto;
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
 }
+
 footer .inner-footer .card .social-links i {
-  width: 50px;
-  height: 50px;
-  line-height: 30px;
+  width: 40px;
+  height: 40px;
+  line-height: 40px;
   border-radius: 50%;
   background-color: #000;
-  box-shadow: var(--box-shadow);
   text-align: center;
   color: var(--light-green);
-  cursor: pointer;
-  padding: 0.6rem;
-  font-size: 1.3rem;
+  font-size: 1.2rem;
 }
-footer .inner-footer .card .social-links i:hover {
-  background: var(--light-green);
-  color: #fff;
+.about-section {
+    padding: 5rem 0;
+   
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 15px;
+}
+
+.section-title {
+    text-align: center;
+    margin-bottom: 3rem;
+    color: #000000;
+    font-size: 2.5rem;
+}
+
+.about-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+.about-card {
+
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+}
+
+.about-card h3 {
+    color: #e74c3c;
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.about-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.about-table th, .about-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+}
+
+.about-table th {
+    width: 30%;
+}
+
+.stats-container {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+}
+
+.stat-item {
+    text-align: center;
+    padding: 1rem;
+}
+
+.stat-number {
+    display: block;
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #e74c3c;
+}
+
+.stat-label {
+    font-size: 1.1rem;
+    color: #7f8c8d;
+}
+
+@media (max-width: 768px) {
+    .about-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .about-table th, .about-table td {
+        padding: 8px;
+    }
 }
 footer .bottom-footer {
   text-transform: capitalize;
   text-align: center;
-  padding: 3rem 0;
+  padding: 1rem 0;
   color: #000;
-  padding-bottom: 1rem;
+  width: 100%;
 }
-
 /* checkout page */
 .checkout .row {
   display: flex;

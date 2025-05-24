@@ -163,7 +163,7 @@ if (isset($_POST['add_order'])) {
                 </div>
                 <div class="input-field">
                     <label>Address</label>
-                    <textarea name="address" required style="resize: none;" required placeholder="Enter full address"></textarea>
+                    <textarea name="address" required style="resize: none;" placeholder="Enter full address"></textarea>
                 </div>
                 
                 <div class="input-field">

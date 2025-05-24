@@ -42,11 +42,18 @@ if(isset($_POST['update'])){
     $content = $_POST['content'];
     $content = filter_var($_POST['content'], FILTER_SANITIZE_STRING);
 
-  $status = $_POST['status'] ?? 'active'; // Default to 'active' if status not provided
+    $status = $_POST['status'] ?? 'active';
     $status = filter_var($status, FILTER_SANITIZE_STRING);
+    
+    $quantity = filter_var($_POST['quantity'], FILTER_SANITIZE_NUMBER_INT);
+    if ($quantity < 0) {
+        $warning_msg[] = 'Quantity cannot be negative!';
+        $quantity = 0;
+    }
 
-    $update_product = $conn->prepare("UPDATE `products` SET name = ?, price = ?, product_detail = ?, status = ? WHERE id = ?");
-    $update_product->execute([$name, $price, $content, $status, $post_id]); 
+    // Corrected query with proper column name and parameter order
+    $update_product = $conn->prepare("UPDATE `products` SET name = ?, price = ?, product_detail = ?, quantity = ?, status = ? WHERE id = ?");
+    $update_product->execute([$name, $price, $content, $quantity, $status, $post_id]); 
 
     $success_msg[] = 'Product updated successfully!';
 
@@ -80,7 +87,6 @@ if(isset($_POST['update'])){
     } 
 }
 
-//delete product
 //delete product
 if(isset($_POST['delete'])){
     $p_id = $_POST['product_id'];
@@ -174,6 +180,10 @@ if(isset($_POST['delete'])){
                         <label >product price</label>
                         <input type="number" name="price" maxlength="100" placeholder="Product price" required class="box" value="<?= $fetch_product['price']; ?>">
                     </div>
+                    <div class="input-field">
+                    <label>Product quantity</label>
+                    <input type="number" name="quantity" min="0" placeholder="Product Quantity" required>
+                </div>
                     <div class="input-field">
                         <label >product description</label>
                         <textarea name="content"><?= $fetch_product['product_detail']; ?></textarea>

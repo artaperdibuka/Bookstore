@@ -35,34 +35,24 @@ if (isset($_POST['logout'])) {
 </head>
 
 <body>
+    
     <?php include 'components/header.php'; ?>
     <div class="main">
         <section class="home-section">
             <div class="slider">
                 <div class="slider__slider">
-                    <img src="image/BuzukuBookstore.jpeg" alt="Slide 1" >
+                    <img src="image/BuzukuBookstore.jpeg" alt="Slide 1">
                     <div class="overlay"></div>
                     <div class="slide-detail">
                         <p class="text-slide">Discover amazing books at Buzuku Bookstore and explore our events!</p>
-                        <a href="events.php" class="btn">Reserve an Event</a>
-                    </div>
-                    <div class="hero-dec-top"></div>
-                    <div class="hero-dec-bottom"></div>
-                </div>
-
-
-                <div class="slider__slider">
-                    <img src="image/t2.png" alt="Slide 2" >
-                    <div class="overlay"></div>
-                    <div class="slide-detail">
-                        <a href="accessories.php" class="btn">Shop Accessories</a>
+                        <a href="about.php" class="btn">About us</a>
                     </div>
                     <div class="hero-dec-top"></div>
                     <div class="hero-dec-bottom"></div>
                 </div>
 
                 <div class="slider__slider">
-                    <img src="image/recomended1.png" alt="Slide 3" >
+                    <img src="image/recomended1.png" alt="Slide 3">
                     <div class="overlay"></div>
                     <div class="slide-detail">
                         <a href="#recommendedBooks" class="btn">View Recommended Books</a>
@@ -77,33 +67,32 @@ if (isset($_POST['logout'])) {
         </section>
 
         <section class="thumb">
-            <div class="box-container">
-                <div class="box">
-                    <img src="image/thumb11.png">
-                    <h3>Biography</h3>
-                    <p>lorem ipsum dolar sit amer elit.</p>
-                    <i class="bx bx-chevron-right"></i>
-                </div>
-                <div class="box">
-                    <img src="image/thumb12.png">
-                    <h3>Fantasy</h3>
-                    <p>lorem ipsum dolar sit amer elit.</p>
-                    <i class="bx bx-chevron-right"></i>
-                </div>
-                <div class="box">
-                    <img src="image/thumb13.png">
-                    <h3>Novel</h3>
-                    <p>lorem ipsum dolar sit amer elit.</p>
-                    <i class="bx bx-chevron-right"></i>
-                </div>
-                <div class="box">
-                    <img src="image/thumb14.png">
-                    <h3>Poetry</h3>
-                    <p>lorem ipsum dolar sit amer elit.</p>
-                    <i class="bx bx-chevron-right"></i>
-                </div>
-
-            </div>
+             <div class="box-container">
+        <div class="box" onclick="window.location.href='view_products.php?category_id=3'">
+            <img src="image/thumb11.png" alt="Biography">
+            <h3>Biography</h3>
+            <p>True stories of remarkable lives that inspire and motivate.</p>
+            <i class="bx bx-chevron-right"></i>
+        </div>
+        <div class="box" onclick="window.location.href='view_products.php?category_id=6'">
+            <img src="image/thumb12.png" alt="Fantasy">
+            <h3>Fantasy</h3>
+            <p>Enter magical worlds filled with adventure and wonder.</p>
+            <i class="bx bx-chevron-right"></i>
+        </div>
+        <div class="box" onclick="window.location.href='view_products.php?category_id=8'">
+            <img src="image/thumb13.png" alt="Novel">
+            <h3>Novel</h3>
+            <p>Engaging stories that capture life’s emotions.</p>
+            <i class="bx bx-chevron-right"></i>
+        </div>
+        <div class="box" onclick="window.location.href='view_products.php?category_id=10'">
+            <img src="image/thumb14.png" alt="Poetry">
+            <h3>Poetry</h3>
+            <p>Expressive verses that evoke deep feelings and reflections.</p>
+            <i class="bx bx-chevron-right"></i>
+        </div>
+    </div>
         </section>
         <section class="container">
             <div class="box-container">
@@ -112,9 +101,10 @@ if (isset($_POST['logout'])) {
                 </div>
                 <div class="box">
                     <img src="img/sale.png">
-                    <span>Nxitoni</span>
-                    <h1>Zbritje deri ne 50%</h1>
-                    <p> Ne shume lloje te librave, nga me te shiturat e deri nga me te rejat...</p>
+                    <span>Hurry up</span>
+                    <h1>Discounts up to 50%</h1>
+                    <p>On many types of books, from bestsellers to the newest releases...</p>
+
                 </div>
             </div>
         </section>

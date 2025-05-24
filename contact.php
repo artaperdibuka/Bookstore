@@ -110,7 +110,7 @@ if($stmt->execute()) {
 
                 <div class="input-field">
                     <p>Your message<span class="required-star">*</span></p>
-                    <textarea name="message" id="message" required><?php echo isset($_POST['message']) ? htmlspecialchars($_POST['message']) : ''; ?></textarea>
+                    <textarea name="message"style="resize: none;" id="message" required><?php echo isset($_POST['message']) ? htmlspecialchars($_POST['message']) : ''; ?></textarea>
                     <div id="messageError" class="error-message" style="color: red; font-size: 0.8em;"></div>
                 </div>
 
@@ -122,7 +122,8 @@ if($stmt->execute()) {
         <div class="address">
             <div class="title">
                 <h1>Contact Details</h1>
-                <p>lorem ipsum bla bla lorem ipsum bla bla</p>
+<p>If you have any questions or need assistance, feel free to reach out to us. We’re here to help!</p>
+
             </div>
             <div class="box-container">
                 <div class="box">
@@ -151,8 +152,8 @@ if($stmt->execute()) {
 
         <section class="services">
             <div class="title">
-                <h1>Pse ne?</h1>
-                <p>ktu ni pargraf e marrim prej chatgbts</p>
+                <h1>Why us?</h1>
+               <p>We offer more than books — we offer a unique reading experience, personal service, and a passion for literature that sets us apart.</p>
 
             </div>
             <div class="box-container">

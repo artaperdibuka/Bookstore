@@ -24,6 +24,8 @@ if (isset($_POST['logout'])) {
     exit();
 }
 
+
+
 if (isset($_POST['add_to_wishlist'])) {
     $id = uniqid();
     $product_id = $_POST['product_id'];

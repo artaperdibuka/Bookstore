@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<about>
+    <company>
+        <name>Buzuku Bookstore</name>
+        <founded>1990</founded>
+        <mission>Promoting reading and culture</mission>
+        <location>Pristina, Kosovo</location>
+    </company>
+    <team>
+        <member>
+            <name>Filan Fisteku</name>
+            <position>Director</position>
+            <experience>20 years</experience>
+        </member>
+        <member>
+            <name>Fitore Krasniqi</name>
+            <position>Manager</position>
+            <experience>15 years</experience>
+        </member>
+    </team>
+    <stats>
+        <books>5000+</books>
+        <customers>10000+</customers>
+        <branches>3</branches>
+    </stats>
+</about>

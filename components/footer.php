@@ -1,10 +1,38 @@
+<?php
+require_once 'components/connection.php';
+
+
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['subscribe'])) {
+    $email = trim($_POST['email']);
+
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        echo "<script>alert('Invalid email address!');</script>";
+    } else {
+        // Kontrollo nëse ekziston emaili
+        $check = $conn->prepare("SELECT * FROM newsletter_subscribers WHERE email = ?");
+        $check->execute([$email]);
+
+        if ($check->rowCount() > 0) {
+            echo "<script>alert('You are already subscribed!');</script>";
+        } else {
+            $insert = $conn->prepare("INSERT INTO newsletter_subscribers (email) VALUES (?)");
+            $insert->execute([$email]);
+            echo "<script>alert('Thank you for subscribing!');</script>";
+        }
+    }
+}
+?>
+
 <div class="top-footer">
     <h2><i class="bx bx-envelope"></i> Sign Up For Newsletter</h2>
-    <div class="input-field">
-        <input type="text" name="" placeholder="email address...">
-        <button class="btn">Subscribe</button>
-    </div>
+    <form method="POST" action="">
+        <div class="input-field">
+            <input type="text" name="email" placeholder="email address..." required>
+            <button type="submit" name="subscribe" class="btn">Subscribe</button>
+        </div>
+    </form>
 </div>
+
 <footer>
     <div  class="overlay"></div>
     <div class="footer-content">
@@ -51,6 +79,7 @@
              </div>
             </div>
         </div>
+        
         <div class="bottom-footer">
             <p>© 1990 - 2025 Libraria Buzuku. All Rights Reserved.</p>
 
