@@ -25,15 +25,13 @@ if (isset($_POST['logout'])) {
     exit();
 }
 
-
-if (isset($_POST['add_to_wishlist'])) {
+if (isset($_POST['add_to_wishlist']) && !isset($_POST['add_to_cart'])) {
     $id = uniqueid();
     $product_id = $_POST['product_id'];
 
     if (empty($user_id)) {
         $warning_msg[] = 'Please log in to add products to your wishlist.';
     } else {
-
         $verify_wishlist = $conn->prepare("SELECT * FROM `wishlist` WHERE user_id = ? AND product_id = ?");
         $verify_wishlist->execute([$user_id, $product_id]);
 
@@ -58,12 +56,12 @@ if (isset($_POST['add_to_wishlist'])) {
     }
 }
 
-if (isset($_POST['add_to_cart'])) {
+if (isset($_POST['add_to_cart']) && !isset($_POST['add_to_wishlist'])) {
     $id = uniqueid();
     $product_id = $_POST['product_id'];
 
     if (empty($user_id)) {
-        $warning_msg[] = 'Please log in to add products to your wishlist.';
+        $warning_msg[] = 'Please log in to add products to your cart.';
     } else {
         $qty = $_POST['qty'];
         $qty = filter_var($qty, FILTER_SANITIZE_STRING);
@@ -77,7 +75,7 @@ if (isset($_POST['add_to_cart'])) {
 
 
         if ($verify_cart->rowCount() > 0) {
-            $warning_msg[] = 'Product already exists in your wishlist';
+            $warning_msg[] = 'Product already exists in your cart';
         } else if ($max_cart_items->rowCount() > 20) {
             $warning_msg[] = 'cart is full';
         } else {
@@ -106,6 +104,12 @@ if (isset($_POST['add_to_cart'])) {
     <title>BookstoreBuzuku - Product Detail Page</title>
     <style type="text/css">
         <?php include 'style.css'; ?>
+        .button-group {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+
     </style>
 </head>
 
@@ -137,13 +141,15 @@ if (isset($_POST['add_to_cart'])) {
                                         Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
                                     </p>
                                 </div>
-                                <input type="hidden" name="product_id" value="<?php echo $fetch_products['id']; ?>">
-                                <div class="button">
-                                    <button type="submit" name="add_to_wishlist" class="btn">Add to wishlist<i class="bx bx-heart"></i></button>
-                                    <input type="hidden" name="qty" value="1" min="0" class="quantity">
-                                    <button type="submit" name="add_to_cart" class="btn" <?= $outOfStock ? 'disabled' : '' ?>>
-                                        <?= $outOfStock ? 'Out of Stock' : 'Add to Cart' ?>
-                                        <i class="bx bx-cart"></i>
+                                <div class="button-group">
+                                    <!-- Butoni i Wishlist -->
+                                    <button type="submit" name="add_to_wishlist" class="btn wishlist-btn">
+                                        <i class="bx bx-heart"></i> Wishlist
+                                    </button>
+
+                                    <!-- Butoni i Cart -->
+                                    <button type="submit" name="add_to_cart" class="btn cart-btn" <?= $outOfStock ? 'disabled' : '' ?>>
+                                        <i class="bx bx-cart"></i> <?= $outOfStock ? 'Out of Stock' : 'Cart' ?>
                                     </button>
                                 </div>
                             </div>
@@ -165,9 +171,9 @@ if (isset($_POST['add_to_cart'])) {
         function showAlert(type, message) {
             Swal.fire({
                 icon: type,
-                title: type === 'success' ? 'Sukses!' : 'Kujdes!',
+                title: type === 'success' ? 'Success!' : 'Warning!',
                 text: message,
-                confirmButtonText: 'Mirë'
+                confirmButtonText: 'ok'
             });
         }
 

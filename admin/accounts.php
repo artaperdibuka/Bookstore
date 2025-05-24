@@ -40,13 +40,12 @@ if (isset($_POST['add_user'])) {
     if ($check_email->rowCount() > 0) {
         $warning_msg[] = 'Email already exists!';
     } else {
-        $insert_user = $conn->prepare("INSERT INTO `users` (name, email, password, user_type) VALUES (?, ?, ?, ?)");
-        $insert_user->execute([$name, $email, $password, $user_type]);
+        $insert_user = $conn->prepare("INSERT INTO `users` (name, email, password) VALUES (?, ?, ?)");
+        $insert_user->execute([$name, $email, $password]);
         $success_msg[] = 'User added successfully!';
     }
 }
 
-// Përditëso përdoruesin
 // Përditëso përdoruesin
 if (isset($_POST['update_user'])) {
     $user_id = $_POST['user_id'];
@@ -75,12 +74,13 @@ if (isset($_POST['update_user'])) {
             }
         } else {
             // Përditëso pa ndryshuar fjalëkalimin
-            $update_user = $conn->prepare("UPDATE `users` SET name = ?, email = ?, user_type = ? WHERE id = ?");
-            $update_user->execute([$name, $email, $user_type, $user_id]);
+            $update_user = $conn->prepare("UPDATE `users` SET name = ?, email = ? WHERE id = ?");
+            $update_user->execute([$name, $email,  $user_id]);
             $success_msg[] = 'User updated successfully!';
         }
     }
 }
+// Fshi përdoruesin
 // Fshi përdoruesin
 if (isset($_POST['delete_user'])) {
     $user_id = $_POST['user_id'];
@@ -89,9 +89,19 @@ if (isset($_POST['delete_user'])) {
     if ($user_id == $admin_id) {
         $warning_msg[] = 'You cannot delete your own account while logged in!';
     } else {
+        // Fshi fillimisht të dhënat e lidhura në cart
+        $delete_cart_items = $conn->prepare("DELETE FROM `cart` WHERE user_id = ?");
+        $delete_cart_items->execute([$user_id]);
+        
+        // Fshi fillimisht të dhënat e lidhura në wishlist
+        $delete_wishlist_items = $conn->prepare("DELETE FROM `wishlist` WHERE user_id = ?");
+        $delete_wishlist_items->execute([$user_id]);
+        
+        // Pastaj fshi përdoruesin
         $delete_user = $conn->prepare("DELETE FROM `users` WHERE id = ?");
         $delete_user->execute([$user_id]);
-        $success_msg[] = 'User deleted successfully!';
+        
+        $success_msg[] = 'User and all related data deleted successfully!';
     }
 }
 ?>

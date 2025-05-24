@@ -45,12 +45,19 @@ if (isset($_POST['update_wishlist'])) {
     $product = $select_product->fetch(PDO::FETCH_ASSOC);
     
     if (!$product) {
-        $warning_msg[] = 'Product not found!';
+        $_SESSION['alert'] = ['type' => 'error', 'message' => 'Product not found!'];
     } else {
         $update_wishlist = $conn->prepare("UPDATE `wishlist` SET product_id = ?, price = ? WHERE id = ?");
-        $update_wishlist->execute([$product_id, $product['price'], $wishlist_id]);
-        $success_msg[] = 'Wishlist updated successfully!';
+        if ($update_wishlist->execute([$product_id, $product['price'], $wishlist_id])) {
+            $_SESSION['alert'] = ['type' => 'success', 'message' => 'Wishlist updated successfully!'];
+        } else {
+            $_SESSION['alert'] = ['type' => 'error', 'message' => 'Failed to update wishlist!'];
+        }
     }
+    
+    // Ridrejto përsëri në faqen pa parametrin edit
+    header("Location: admin_wishlist.php");
+    exit();
 }
 
 // Add new wishlist item

@@ -58,15 +58,187 @@ if (isset($_POST['cancel_order'])) {
     <style type="text/css">
         <?php include 'style.css'; ?>
 
-        /* Shtojmë stilizim për payment_status */
-        .payment-status-pending {
-            color: #ff9800;
-            font-weight: bold;
-        }
-        .payment-status-complete {
-            color: #4caf50;
-            font-weight: bold;
-        }
+        /* Stilizimi bazë */
+.orders-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    padding: 15px;
+}
+
+.order-card {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.order-card.canceled {
+    position: relative;
+    opacity: 0.8;
+}
+
+.order-card.canceled::after {
+    content: 'Canceled';
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: #f44336;
+    color: white;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.order-info {
+    padding: 15px;
+    background: #f8f9fa;
+    border-bottom: 1px solid #eee;
+}
+
+.order-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.order-meta > span {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 14px;
+}
+
+.books-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 15px;
+    padding: 15px;
+}
+
+.book-card {
+    border: 1px solid #eee;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: transform 0.2s;
+}
+
+.book-card:hover {
+    transform: translateY(-3px);
+}
+
+.book-image {
+    width: 100%;
+    height: 120px;
+    object-fit: contain;
+    background: #f8f9fa;
+    padding: 10px;
+}
+
+.book-info {
+    padding: 10px;
+}
+
+.book-title {
+    font-size: 14px;
+    margin: 0 0 5px 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.book-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    font-size: 13px;
+}
+
+.book-price {
+    font-weight: bold;
+    color: #2e7d32;
+}
+
+.book-status {
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 11px;
+}
+
+.book-status.delivered {
+    background: #e8f5e9;
+    color: #2e7d32;
+}
+
+.book-status.canceled {
+    background: #ffebee;
+    color: #c62828;
+}
+
+.book-status.in-progress {
+    background: #fff3e0;
+    color: #e65100;
+}
+
+.order-actions {
+    margin-top: 10px;
+}
+
+.cancel-btn {
+    background: #f44336;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.cancel-btn:hover {
+    background: #d32f2f;
+}
+
+.payment-status {
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 13px;
+}
+
+.payment-status.pending {
+    background: #fff3e0;
+    color: #e65100;
+}
+
+.payment-status.complete {
+    background: #e8f5e9;
+    color: #2e7d32;
+}
+
+.no-orders {
+    text-align: center;
+    grid-column: 1 / -1;
+    padding: 40px;
+    color: #666;
+    font-size: 18px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .orders-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .books-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
     </style>
 </head>
 
@@ -84,52 +256,90 @@ if (isset($_POST['cancel_order'])) {
                 <p>Here you can see all your orders</p>
 
                 <div class="box-container">
-                    <?php
-                    $select_orders = $conn->prepare("SELECT * FROM `orders` WHERE user_id = ? ORDER BY order_date DESC");
-                    $select_orders->execute([$user_id]);
+   <div class="orders-grid">
+    <?php
+    $select_orders = $conn->prepare("
+        SELECT 
+            DATE_FORMAT(order_date, '%Y-%m-%d %H:%i:%s') as order_date_formatted,
+            GROUP_CONCAT(id) as order_ids,
+            GROUP_CONCAT(product_id) as product_ids,
+            GROUP_CONCAT(price) as prices,
+            GROUP_CONCAT(qty) as quantities,
+            GROUP_CONCAT(status SEPARATOR '|') as statuses,
+            payment_status,
+            SUM(price * qty) as total_amount,
+            COUNT(*) as item_count
+        FROM `orders` 
+        WHERE user_id = ? 
+        GROUP BY DATE_FORMAT(order_date, '%Y-%m-%d %H:%i:%s'), payment_status
+        ORDER BY order_date DESC
+    ");
+    $select_orders->execute([$user_id]);
 
-                    if ($select_orders->rowCount() > 0) {
-                        while ($fetch_order = $select_orders->fetch(PDO::FETCH_ASSOC)) {
-                            $select_product = $conn->prepare("SELECT * FROM `products` WHERE id = ?");
-                            $select_product->execute([$fetch_order['product_id']]);
-                            $fetch_product = $select_product->fetch(PDO::FETCH_ASSOC);
+    if ($select_orders->rowCount() > 0) {
+        while ($fetch_order = $select_orders->fetch(PDO::FETCH_ASSOC)) {
+            $product_ids = explode(',', $fetch_order['product_ids']);
+            $prices = explode(',', $fetch_order['prices']);
+            $quantities = explode(',', $fetch_order['quantities']);
+            $statuses = explode('|', $fetch_order['statuses']);
+            
+            $all_canceled = in_array('Canceled', $statuses);
+    ?>
+    <div class="order-card <?= $all_canceled ? 'canceled' : '' ?>">
+        <div class="order-info">
+            <div class="order-meta">
+                <span class="order-date">
+                    <i class="bi bi-calendar-fill"></i>
+                    <?= date('d M Y H:i', strtotime($fetch_order['order_date_formatted'])) ?>
+                </span>
+                <span class="order-total">
+                    <i class="bi bi-cash-stack"></i>
+                    <?= number_format($fetch_order['total_amount'], 2) ?>€
+                </span>
+                <span class="payment-status <?= strtolower($fetch_order['payment_status']) ?>">
+                    <i class="bi bi-credit-card"></i>
+                    <?= $fetch_order['payment_status'] ?>
+                </span>
+            </div>
+            
+            <?php if ($fetch_order['payment_status'] == 'Pending' && !$all_canceled) { ?>
+            <form method="post" class="order-actions">
+                <input type="hidden" name="order_date" value="<?= $fetch_order['order_date_formatted'] ?>">
+                <button type="submit" name="cancel_order" class="cancel-btn">
+                    <i class="bi bi-x-circle"></i> Cancel
+                </button>
+            </form>
+            <?php } ?>
+        </div>
 
-                            // Përcakto klasën e statusit
-                            $status_class = 'status-' . strtolower(str_replace(' ', '-', $fetch_order['status']));
-                            $payment_status_class = 'payment-status-' . strtolower($fetch_order['payment_status']);
-                    ?>
-                            <div class="box" <?php if ($fetch_order['status'] == 'Canceled') {
-                                                    echo 'style="border:2px solid red"';
-                                                } ?>>
-                                <a href="view_order.php?get_id=<?= $fetch_order['id']; ?>">
-                                    <p class="date"><i class="bi bi-calendar-fill"></i><span><?= date('d M Y H:i', strtotime($fetch_order['order_date'])); ?></span></p>
-                                    <img src="image/<?= $fetch_product['image']; ?>" class="img">
-                                    <div class="row">
-                                        <h3 class="name"><?= $fetch_product['name']; ?></h3>
-                                        <p class="price">Price: <?= $fetch_order['price']; ?>€ x <?= $fetch_order['qty']; ?></p>
-                                        <p class="status <?= $status_class; ?>">Status: <?= $fetch_order['status']; ?></p>
-                                        <p class="<?= $payment_status_class; ?>">Payment: <?= $fetch_order['payment_status']; ?></p>
-                                        <p class="total">Total: <?= number_format($fetch_order['price'] * $fetch_order['qty'], 2); ?>€</p>
-                                    </div>
-                                </a>
-
-                                <!-- Shfaq butonin Cancel VETËM nëse payment_status është Pending dhe statusi nuk është Delivered -->
-                                <?php if ($fetch_order['payment_status'] == 'Pending' && $fetch_order['status'] != 'Delivered') { ?>
-                                    <form method="post" style="margin-top: 10px;" onsubmit="return confirmCancel()">
-                                        <input type="hidden" name="order_id" value="<?= $fetch_order['id']; ?>">
-                                        <button type="submit" name="cancel_order" class="cancel-btn">
-                                            Cancel Order
-                                        </button>
-                                    </form>
-                                <?php } ?>
-                            </div>
-                    <?php
-                        }
-                    } else {
-                        echo '<p class="empty">No orders placed yet.</p>';
-                    }
-                    ?>
+        <div class="books-grid">
+            <?php
+            for ($i = 0; $i < count($product_ids); $i++) {
+                $select_product = $conn->prepare("SELECT * FROM `products` WHERE id = ?");
+                $select_product->execute([$product_ids[$i]]);
+                $fetch_product = $select_product->fetch(PDO::FETCH_ASSOC);
+            ?>
+            <div class="book-card">
+                <img src="image/<?= $fetch_product['image'] ?>" alt="<?= $fetch_product['name'] ?>" class="book-image">
+                <div class="book-info">
+                    <h3 class="book-title"><?= $fetch_product['name'] ?></h3>
+                    <div class="book-meta">
+                        <span class="book-price"><?= $prices[$i] ?>€</span>
+                        <span class="book-qty">× <?= $quantities[$i] ?></span>
+                        <span class="book-status <?= strtolower($statuses[$i]) ?>"><?= $statuses[$i] ?></span>
+                    </div>
                 </div>
+            </div>
+            <?php } ?>
+        </div>
+    </div>
+    <?php
+        }
+    } else {
+        echo '<p class="no-orders">Nuk keni asnjë porosi.</p>';
+    }
+    ?>
+</div>
             </div>
         </section>
 

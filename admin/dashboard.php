@@ -50,7 +50,7 @@ if (isset($_POST['logout'])) {
     <div class="main">
 
         <div class="tittle2">
-            <a href="dashboard.php">Home</a><span>Dashboard</span>
+            <a >Dashboard</a><span> admin panel</span>
         </div>
         <section class="dashboard">
             <h1 class="heading">Dashboard</h1>
@@ -157,6 +157,16 @@ if (isset($_POST['logout'])) {
                     <p>active carts</p>
                     <a href="admin_cart.php" class="btn">view all carts</a>
                 </div>
+                   <div class="box">
+                    <?php
+                    $select_wishlists = $conn->prepare("SELECT * FROM `wishlist`");
+                    $select_wishlists->execute();
+                    $num_of_wishlists = $select_wishlists->rowCount();
+                    ?>
+                    <h3><?= $num_of_wishlists; ?></h3>
+                    <p>wishlist items</p>
+                    <a href="admin_wishlist.php" class="btn">view wishlists</a>
+                </div>
                 <div class="box">
                     <?php
                     $select_subscribers = $conn->prepare("SELECT * FROM `newsletter_subscribers`");
@@ -169,16 +179,7 @@ if (isset($_POST['logout'])) {
                 </div>
 
                 <!-- Admin Wishlist Box -->
-                <div class="box">
-                    <?php
-                    $select_wishlists = $conn->prepare("SELECT * FROM `wishlist`");
-                    $select_wishlists->execute();
-                    $num_of_wishlists = $select_wishlists->rowCount();
-                    ?>
-                    <h3><?= $num_of_wishlists; ?></h3>
-                    <p>wishlist items</p>
-                    <a href="admin_wishlist.php" class="btn">view wishlists</a>
-                </div>
+             
 
 
 

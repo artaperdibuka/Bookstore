@@ -23,7 +23,6 @@ if (isset($_POST['logout'])) {
     exit();
 }
 
-// Funksione për menaxhimin e mesazheve
 if (isset($_POST['add_message'])) {
     $stmt = $conn->prepare("INSERT INTO `messages` (name, email, subject, message) VALUES (?, ?, ?, ?)");
     if ($stmt->execute([
@@ -32,10 +31,12 @@ if (isset($_POST['add_message'])) {
         filter_var($_POST['subject'], FILTER_SANITIZE_STRING),
         filter_var($_POST['message'], FILTER_SANITIZE_STRING)
     ])) {
-        echo "<script>Swal.fire('Success!', 'Message added successfully!', 'success');</script>";
+        $_SESSION['alert'] = ['type' => 'success', 'message' => 'Message added successfully!'];
     } else {
-        echo "<script>Swal.fire('Error!', 'Failed to add message!', 'error');</script>";
+        $_SESSION['alert'] = ['type' => 'error', 'message' => 'Failed to add message!'];
     }
+    header("Location: ".$_SERVER['PHP_SELF']);
+    exit();
 }
 
 if (isset($_POST['update_message'])) {
@@ -47,19 +48,23 @@ if (isset($_POST['update_message'])) {
         filter_var($_POST['message'], FILTER_SANITIZE_STRING),
         $_POST['message_id']
     ])) {
-        echo "<script>Swal.fire('Success!', 'Message updated successfully!', 'success');</script>";
+        $_SESSION['alert'] = ['type' => 'success', 'message' => 'Message updated successfully!'];
     } else {
-        echo "<script>Swal.fire('Error!', 'Failed to update message!', 'error');</script>";
+        $_SESSION['alert'] = ['type' => 'error', 'message' => 'Failed to update message!'];
     }
+    header("Location: ".$_SERVER['PHP_SELF']);
+    exit();
 }
 
 if (isset($_POST['delete'])) {
     $stmt = $conn->prepare("DELETE FROM `messages` WHERE id=?");
     if ($stmt->execute([$_POST['delete_id']])) {
-        echo "<script>Swal.fire('Success!', 'Message deleted successfully!', 'success');</script>";
+        $_SESSION['alert'] = ['type' => 'success', 'message' => 'Message deleted successfully!'];
     } else {
-        echo "<script>Swal.fire('Error!', 'Failed to delete message!', 'error');</script>";
+        $_SESSION['alert'] = ['type' => 'error', 'message' => 'Failed to delete message!'];
     }
+    header("Location: ".$_SERVER['PHP_SELF']);
+    exit();
 }
 
 // Merr të gjitha mesazhet
@@ -132,7 +137,7 @@ $messages = $conn->query("SELECT * FROM `messages`")->fetchAll(PDO::FETCH_ASSOC)
              <button class="btn" onclick="toggleMsgForm('editMsgForm<?= $message['id'] ?>')">Edit</button>
             <form style="display:inline" method="post">
                 <input type="hidden" name="delete_id" value="<?= $message['id'] ?>">
-                <button type="submit" name="delete" class="btn" onclick="return confirmDelete()">Delete</button>
+                <button type="submit" name="delete" class="btn" >Delete</button>
             </form>
            </div>
             
@@ -153,7 +158,7 @@ $messages = $conn->query("SELECT * FROM `messages`")->fetchAll(PDO::FETCH_ASSOC)
                 </div>
                 <div class="msg-form-group">
                     <label>Message</label>
-                    <textarea name="message" required style="resize: none;"><?= htmlspecialchars($message['message']) ?></textarea>
+                    <textarea name="message" required><?= htmlspecialchars($message['message']) ?></textarea>
                 </div>
                 <div class="flex-btn">
                 <button type="submit" name="update_message" class="btn">Update</button>
@@ -168,24 +173,22 @@ $messages = $conn->query("SELECT * FROM `messages`")->fetchAll(PDO::FETCH_ASSOC)
 
 <script src="../js/admin_script.js"></script>
 <script>
+    // Shfaq alertin nëse ekziston
+    <?php if (isset($_SESSION['alert'])): ?>
+        Swal.fire({
+            icon: '<?= $_SESSION['alert']['type'] ?>',
+            title: '<?= $_SESSION['alert']['type'] === 'success' ? 'Success!' : 'Error!' ?>',
+            text: '<?= $_SESSION['alert']['message'] ?>'
+        });
+        <?php unset($_SESSION['alert']); ?>
+    <?php endif; ?>
+
     function toggleMsgForm(id) {
         document.getElementById(id).classList.toggle('msg-hidden');
     }
     
-    function confirmDelete() {
-        return Swal.fire({
-            title: 'Are you sure?',
-            text: "You won't be able to revert this!",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, delete it!'
-        }).then((result) => {
-            return result.isConfirmed;
-        });
-    }
+   
 </script>
 <script src="../script.js"></script>
 </body>
-</html>
+</html> 

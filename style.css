@@ -2269,6 +2269,10 @@ footer .inner-footer .card .social-links i {
   color: var(--light-green);
   font-size: 1.2rem;
 }
+footer .inner-footer .card .social-links i :hover{
+ 
+  background-color: var(--green);
+}
 .about-section {
     padding: 5rem 0;
    
