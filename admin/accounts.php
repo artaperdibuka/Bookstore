@@ -31,7 +31,7 @@ if (isset($_POST['add_user'])) {
     $name = filter_var($_POST['name'], FILTER_SANITIZE_STRING);
     $email = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
     $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
-    $user_type = $_POST['user_type'] ?? 'user';
+
 
     // Kontrollo nëse emaili ekziston
     $check_email = $conn->prepare("SELECT * FROM `users` WHERE email = ?");
@@ -52,7 +52,7 @@ if (isset($_POST['update_user'])) {
     $user_id = $_POST['user_id'];
     $name = filter_var($_POST['name'], FILTER_SANITIZE_STRING);
     $email = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
-    $user_type = $_POST['user_type'] ?? 'user';
+  
     $new_password = $_POST['new_password'] ?? '';
     $confirm_password = $_POST['confirm_password'] ?? '';
 
@@ -69,8 +69,8 @@ if (isset($_POST['update_user'])) {
                 $warning_msg[] = 'Passwords do not match!';
             } else {
                 $hashed_password = password_hash($new_password, PASSWORD_DEFAULT);
-                $update_user = $conn->prepare("UPDATE `users` SET name = ?, email = ?, user_type = ?, password = ? WHERE id = ?");
-                $update_user->execute([$name, $email, $user_type, $hashed_password, $user_id]);
+                $update_user = $conn->prepare("UPDATE `users` SET name = ?, email = ?, password = ? WHERE id = ?");
+                $update_user->execute([$name, $email, $hashed_password, $user_id]);
                 $success_msg[] = 'User (including password) updated successfully!';
             }
         } else {
@@ -128,25 +128,21 @@ if (isset($_POST['delete_user'])) {
             <div class="user-form" id="userForm" style="display: none;">
                 <form action="" method="post">
                     <div class="input-field">
-                        <label>Name <sup>*</sup></label>
+                        <label>Name </label>
                         <input type="text" name="name" maxlength="50" required>
                     </div>
                     <div class="input-field">
-                        <label>Email <sup>*</sup></label>
+                        <label>Email </label>
                         <input type="email" name="email" maxlength="50" required>
                     </div>
                     <div class="input-field">
-                        <label>Password <sup>*</sup></label>
+                        <label>Password </label>
                         <input type="password" name="password" required>
                     </div>
-                    <div class="input-field">
-                        <label>User Type</label>
-                        <select name="user_type">
-                            <option value="user">User</option>
-                            <option value="admin">Admin</option>
-                        </select>
-                    </div>
+                    <div class="flex-btn">
                     <button type="submit" name="add_user" class="btn">Add User</button>
+                <button type="button" class="btn" onclick="toggleUserForm()">Cancel</button>
+                </div>
                 </form>
             </div>
 
@@ -156,20 +152,14 @@ if (isset($_POST['delete_user'])) {
                 <form action="" method="post">
                     <input type="hidden" name="user_id" id="edit_user_id">
                     <div class="input-field">
-                        <label>Name <sup>*</sup></label>
+                        <label>Name </label>
                         <input type="text" name="name" id="edit_name" maxlength="50" required>
                     </div>
                     <div class="input-field">
-                        <label>Email <sup>*</sup></label>
+                        <label>Email </label>
                         <input type="email" name="email" id="edit_email" maxlength="50" required>
                     </div>
-                    <div class="input-field">
-                        <label>User Type</label>
-                        <select name="user_type" id="edit_user_type">
-                            <option value="user">User</option>
-                            <option value="admin">Admin</option>
-                        </select>
-                    </div>
+                   
                     <div class="input-field">
                         <label>New Password (leave blank to keep current)</label>
                         <input type="password" name="new_password" id="edit_password">
@@ -178,7 +168,10 @@ if (isset($_POST['delete_user'])) {
                         <label>Confirm New Password</label>
                         <input type="password" name="confirm_password" id="edit_confirm_password">
                     </div>
-                    <button type="submit" name="update_user" class="btn">Update User</button>
+                   <div class="flex-btn">
+                        <button type="submit" name="update_user" class="btn">Update User</button>
+                        <button type="button" class="btn" onclick="toggleUserForm()">Cancel</button>
+                    </div>
                 </form>
             </div>
 
@@ -195,14 +188,13 @@ if (isset($_POST['delete_user'])) {
                             <p>user id: <span><?= $fetch_user['id']; ?></span></p>
                             <p>user name: <span><?= htmlspecialchars($fetch_user['name']); ?></span></p>
                             <p>user email: <span><?= htmlspecialchars($fetch_user['email']); ?></span></p>
-                            <p>user type: <span><?= htmlspecialchars($fetch_user['user_type'] ?? 'user'); ?></span></p>
-
+                           
                             <div class="action-buttons">
                                 <button class="btn" onclick="openEditModal(
                             '<?= $fetch_user['id']; ?>',
                             '<?= htmlspecialchars($fetch_user['name']); ?>',
                             '<?= htmlspecialchars($fetch_user['email']); ?>',
-                            '<?= htmlspecialchars($fetch_user['user_type'] ?? 'user'); ?>'
+                           
                         )">Edit</button>
 
                                 <form action="" method="post" style="display: inline;">
@@ -254,7 +246,6 @@ if (isset($_POST['delete_user'])) {
             document.getElementById('edit_user_id').value = id;
             document.getElementById('edit_name').value = name;
             document.getElementById('edit_email').value = email;
-            document.getElementById('edit_user_type').value = userType;
 
             // Hide add form if visible
             document.getElementById('userForm').style.display = 'none';

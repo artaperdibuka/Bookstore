@@ -1,11 +1,9 @@
 <?php
-
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
 include_once 'components/connection.php';
-
 
 if (isset($_SESSION['user_id'])) {
     $user_id = $_SESSION['user_id'];
@@ -13,17 +11,14 @@ if (isset($_SESSION['user_id'])) {
     $user_id = '';
 }
 
-
 $success_msg = [];
 $warning_msg = [];
-
 
 if (isset($_POST['logout'])) {
     session_destroy();
     header('Location: login.php');
     exit();
 }
-
 
 if (isset($_GET['get_id']) && is_numeric($_GET['get_id'])) {
     $get_id = intval($_GET['get_id']);
@@ -33,12 +28,18 @@ if (isset($_GET['get_id']) && is_numeric($_GET['get_id'])) {
 }
 
 if (isset($_POST['cancel'])) {
-    $update_order = $conn->prepare("UPDATE `orders` SET status = ? WHERE id = ?");
-    $update_order->execute(['cancelled', $get_id]);
-
-    $_SESSION['success_msg'] = 'Order cancelled successfully';
-
-
+    // Kontrollo nëse porosia ka payment_status = 'pending' para se të lejohet anulimi
+    $check_order = $conn->prepare("SELECT * FROM `orders` WHERE id = ? AND payment_status = 'pending'");
+    $check_order->execute([$get_id]);
+    
+    if ($check_order->rowCount() > 0) {
+        $update_order = $conn->prepare("UPDATE `orders` SET status = ? WHERE id = ?");
+        $update_order->execute(['cancelled', $get_id]);
+        $_SESSION['success_msg'] = 'Order cancelled successfully';
+    } else {
+        $_SESSION['warning_msg'] = 'Order cannot be cancelled because payment is already completed';
+    }
+    
     header('Location: order.php');
     exit();
 }
@@ -56,6 +57,18 @@ if (isset($_POST['cancel'])) {
     <title>BookstoreBuzuku - Order Detail Page</title>
     <style type="text/css">
         <?php include 'style.css'; ?>
+        
+        /* Shtojmë stilizim për payment status */
+        .payment-status {
+            font-weight: bold;
+            margin: 5px 0;
+        }
+        .payment-status.pending {
+            color: #FFA500;
+        }
+        .payment-status.complete {
+            color: #4CAF50;
+        }
     </style>
 </head>
 
@@ -101,18 +114,32 @@ if (isset($_POST['cancel'])) {
                                         <p class="user"><i class="bi bi-phone"></i><?= $fetch_order['number']; ?></p>
                                         <p class="user"><i class="bi bi-envelope"></i><?= $fetch_order['email']; ?></p>
                                         <p class="user"><i class="bi bi-pin-map-fill"></i><?= $fetch_order['address']; ?></p>
-                                        <p class="title">status</p>
-                                        <p class="status" style="color: <?php if ($fetch_order['status'] == 'delivered') {
-                                                                            echo 'green';
-                                                                        } elseif ($fetch_order['status'] == 'cancelled') {
-                                                                            echo 'red';
-                                                                        } else {
-                                                                            echo 'orange';
-                                                                        } ?>;"><?= $fetch_order['status'] ?></p>
+                                        
+                                        <p class="title">Payment Status</p>
+                                        <p class="payment-status <?= $fetch_order['payment_status'] ?>">
+                                            <?= ucfirst($fetch_order['payment_status']) ?>
+                                        </p>
+                                        
+                                        <p class="title">Order Status</p>
+                                        <p class="status" style="color: <?php 
+                                            if ($fetch_order['status'] == 'delivered') {
+                                                echo 'green';
+                                            } elseif ($fetch_order['status'] == 'cancelled') {
+                                                echo 'red';
+                                            } else {
+                                                echo 'orange';
+                                            } ?>;">
+                                            <?= ucfirst($fetch_order['status']) ?>
+                                        </p>
+                                        
                                         <?php
                                         if ($fetch_order['status'] == 'cancelled') { ?>
-                                            <a href="checkout.php?get_id=<?= $fetch_product['id']; ?>" class="btn">order again</a>
-                                        <?php } else { ?>
+                                            <a href="checkout.php?get_id=<?= $fetch_product['id']; ?>" class="btn">Order again</a>
+                                        <?php } 
+                                        // Shfaq butonin Cancel VETËM nëse payment_status është 'pending' dhe statusi nuk është 'delivered' ose 'cancelled'
+                                        elseif ($fetch_order['payment_status'] == 'pending' && 
+                                               $fetch_order['status'] != 'delivered' && 
+                                               $fetch_order['status'] != 'cancelled') { ?>
                                             <form method="post">
                                                 <button type="submit" name="cancel" class="btn" onclick="return confirm('Do you want to cancel this order?')">Cancel order</button>
                                             </form>
@@ -135,9 +162,7 @@ if (isset($_POST['cancel'])) {
         <?php include 'components/footer.php'; ?>
     </div>
 
-
     <script>
-
         function showAlert(type, message) {
             Swal.fire({
                 icon: type,
@@ -147,17 +172,14 @@ if (isset($_POST['cancel'])) {
             });
         }
 
-      
-        <?php if (!empty($success_msg)): ?>
-            <?php foreach ($success_msg as $msg): ?>
-                showAlert('success', '<?php echo $msg; ?>');
-            <?php endforeach; ?>
+        <?php if (!empty($_SESSION['success_msg'])): ?>
+            showAlert('success', '<?= $_SESSION['success_msg'] ?>');
+            <?php unset($_SESSION['success_msg']); ?>
         <?php endif; ?>
 
-        <?php if (!empty($warning_msg)): ?>
-            <?php foreach ($warning_msg as $msg): ?>
-                showAlert('warning', '<?php echo $msg; ?>');
-            <?php endforeach; ?>
+        <?php if (!empty($_SESSION['warning_msg'])): ?>
+            showAlert('warning', '<?= $_SESSION['warning_msg'] ?>');
+            <?php unset($_SESSION['warning_msg']); ?>
         <?php endif; ?>
     </script>
     <script src="contact-validation.js"></script>

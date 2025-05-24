@@ -30,6 +30,7 @@ if (isset($_POST['logout'])) {
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -41,59 +42,21 @@ if (isset($_POST['logout'])) {
         <?php include '../style.css'; ?>
     </style>
 </head>
+
 <body>
-   <?php include __DIR__ . '/../components/admin_header.php'; ?>
+    <?php include __DIR__ . '/../components/admin_header.php'; ?>
 
 
     <div class="main">
-    
-       <div class="tittle2">
+
+        <div class="tittle2">
             <a href="dashboard.php">Home</a><span>Dashboard</span>
-       </div>
-       <section class="dashboard">
+        </div>
+        <section class="dashboard">
             <h1 class="heading">Dashboard</h1>
             <div class="box-container">
                 <div class="box">
-                    <h3>Welcome</h3>
-                    <p><?php echo htmlspecialchars($fetch_profile['name']); ?></p>
-                    <a href="profile.php" class="btn">Profile</a>
-                </div>
-                
-                <div class="box">
-                    <?php 
-                    $select_product = $conn->prepare("SELECT * FROM `products`");
-                    $select_product->execute();
-                    $num_of_products = $select_product->rowCount();
-                    ?>
-                    <h3><?= $num_of_products; ?></h3>
-                    <p>Products added</p>
-                    <a href="add_products.php" class="btn">Add new products</a>
-                </div>
-                
-               
-                <div class="box">
-                    <?php 
-                    $select_available_product = $conn->prepare("SELECT * FROM `products` WHERE quantity > 0");   
-                    $select_available_product->execute();
-                    $num_of_available_products = $select_available_product->rowCount();
-                    ?>
-                    <h3><?= $num_of_available_products; ?></h3>
-                    <p>Available products</p>
-                    <a href="view_products.php" class="btn">View products</a>
-                </div>
-                
-                <div class="box">
-                    <?php 
-                    $select_out_of_stock = $conn->prepare("SELECT * FROM `products` WHERE quantity = 0");   
-                    $select_out_of_stock->execute();
-                    $num_of_out_of_stock = $select_out_of_stock->rowCount();
-                    ?>
-                    <h3><?= $num_of_out_of_stock; ?></h3>
-                    <p>Out of stock</p>
-                    <a href="view_products.php" class="btn">View products</a>
-                </div>
-                <div class="box">
-                    <?php 
+                    <?php
                     $select_users = $conn->prepare("SELECT * FROM `users`");
                     $select_users->execute();
                     $num_of_users = $select_users->rowCount();
@@ -103,7 +66,57 @@ if (isset($_POST['logout'])) {
                     <a href="accounts.php" class="btn">Add new users</a>
                 </div>
                 <div class="box">
-                    <?php 
+                    <?php
+                    // Totali i të gjitha produkteve
+                    $select_total = $conn->prepare("SELECT * FROM `products`");
+                    $select_total->execute();
+                    $num_of_total = $select_total->rowCount();
+                    ?>
+                    <h3><?= $num_of_total; ?></h3>
+                    <p>Total products</p>
+                    <a href="view_products.php" class="btn">View all</a>
+                </div>
+                <div class="box">
+                    <?php
+                    $select_product = $conn->prepare("SELECT * FROM `products`");
+                    $select_product->execute();
+                    $num_of_products = $select_product->rowCount();
+                    ?>
+                    <h3><?= $num_of_products; ?></h3>
+                    <p>Products added</p>
+                    <a href="add_products.php" class="btn">Add new products</a>
+                </div>
+                <div class="box">
+                    <?php
+                    // Të gjitha produktet e disponueshme (quantity > 0)
+                    $select_available_product = $conn->prepare("SELECT * FROM `products` WHERE quantity > 0");
+                    $select_available_product->execute();
+                    $num_of_available_products = $select_available_product->rowCount();
+                    ?>
+                    <h3><?= $num_of_available_products; ?></h3>
+                    <p>Available products</p>
+                    <a href="view_products.php?filter=available" class="btn">View products</a>
+                </div>
+
+                <div class="box">
+                    <?php
+                    // Produktet që kanë mbaruar (quantity = 0)
+                    $select_out_of_stock = $conn->prepare("SELECT * FROM `products` WHERE quantity = 0");
+                    $select_out_of_stock->execute();
+                    $num_of_out_of_stock = $select_out_of_stock->rowCount();
+                    ?>
+                    <h3><?= $num_of_out_of_stock; ?></h3>
+                    <p>Out of stock</p>
+                    <a href="view_products.php?filter=out_of_stock" class="btn">View products</a>
+                </div>
+
+
+
+
+
+
+                <div class="box">
+                    <?php
                     $select_message = $conn->prepare("SELECT * FROM `messages`");
                     $select_message->execute();
                     $num_of_message = $select_message->rowCount();
@@ -113,50 +126,54 @@ if (isset($_POST['logout'])) {
                     <a href="admin_message.php" class="btn">view message</a>
                 </div>
                 <div class="box">
-                    <?php 
+                    <?php
                     $select_orders = $conn->prepare("SELECT * FROM `orders`");
                     $select_orders->execute();
                     $num_of_orders = $select_orders->rowCount();
                     ?>
                     <h3><?= $num_of_orders; ?></h3>
                     <p>total order placed</p>
-                    <a href="order.php" class="btn">view orders</a>
+                    <a href="admin_order.php" class="btn">view orders</a>
                 </div>
+
+
                 <div class="box">
-                    <?php 
-                    $select_confirm_orders = $conn->prepare("SELECT * FROM `orders` WHERE status = ?");
-                    $select_confirm_orders->execute(['in progress']);
-                    $num_of_confirm_orders = $select_confirm_orders->rowCount();
-                    ?>
-                    <h3><?= $num_of_confirm_orders; ?></h3>
-                    <p>total confirm orders</p>
-                    <a href="order.php" class="btn">view  confirm orders</a>
-                </div>
-                <div class="box">
-                    <?php 
-                    $select_canceled_orders = $conn->prepare("SELECT * FROM `orders` WHERE status = ?");
-                    $select_canceled_orders->execute(['canceled']);
-                    $num_of_canceled_orders = $select_canceled_orders->rowCount();
-                    ?>
-                    <h3><?= $num_of_confirm_orders; ?></h3>
-                    <p>total canceled orders</p>
-                    <a href="order.php" class="btn">view  canceled orders</a>
-                </div>
-                <div class="box">
-                    <?php 
+                    <?php
                     $select_categories = $conn->prepare("SELECT * FROM `categories`");
                     $select_categories->execute();
                     $num_of_categories = $select_categories->rowCount();
                     ?>
                     <h3><?= $num_of_categories; ?></h3>
                     <p>categories added</p>
-                    <a href="add_categories.php" class="btn">add new accessories</a>
+                    <a href="add_categories.php" class="btn">add new categories</a>
                 </div>
-                
+                <div class="box">
+                    <?php
+                    $select_carts = $conn->prepare("SELECT * FROM `cart`");
+                    $select_carts->execute();
+                    $num_of_carts = $select_carts->rowCount();
+                    ?>
+                    <h3><?= $num_of_carts; ?></h3>
+                    <p>active carts</p>
+                    <a href="admin_cart.php" class="btn">view all carts</a>
+                </div>
 
-                
+                <!-- Admin Wishlist Box -->
+                <div class="box">
+                    <?php
+                    $select_wishlists = $conn->prepare("SELECT * FROM `wishlist`");
+                    $select_wishlists->execute();
+                    $num_of_wishlists = $select_wishlists->rowCount();
+                    ?>
+                    <h3><?= $num_of_wishlists; ?></h3>
+                    <p>wishlist items</p>
+                    <a href="admin_wishlist.php" class="btn">view wishlists</a>
+                </div>
+
+
+
             </div>
-       </section>
+        </section>
     </div>
 
     <script>
@@ -183,4 +200,5 @@ if (isset($_POST['logout'])) {
     </script>
     <script src="../script.js"></script>
 </body>
+
 </html>

@@ -83,13 +83,13 @@ sup {
 }
 
 select {
-  background: transparent;
-  border-radius: 20px;
+  background: white;
   padding: 1rem;
-  border: none;
+  border: 1px solid var(--green);
   overflow: none;
   width: 100%;
-  margin: 0.6erem 0;
+  margin: 0.5rem 0;
+
 }
 input[type="submit"] {
   cursor: pointer;
@@ -100,6 +100,7 @@ input[type="submit"] {
   cursor: pointer;
   padding: 1rem;
 }
+
 
 form h3 {
   text-align: center;
@@ -140,14 +141,37 @@ form h3 {
   margin: 30px 10px;
 }
 
+.dashboard .box-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(30rem, 1fr));
+  gap: 1.5rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  align-items: flex-start;
+}
+
+/* Për 2 kuti në rresht në ekranë të mëdhenj */
+@media (min-width: 992px) {
+  .dashboard .box-container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Për 1 kutinë në rresht në ekranë të vegjël */
+@media (max-width: 991px) {
+  .dashboard .box-container {
+    grid-template-columns: 1fr;
+  }
+}
+
 .dashboard .box-container .box {
   text-align: center;
   box-shadow: var(--box-shadow);
   border-radius: 0.5rem;
   padding: 1.5rem;
   padding-bottom: 3rem;
+  margin: 0.5rem;
 }
-
 .dashboard .box-container .box h3 {
   font-size: 3rem;
   margin-bottom: 1rem;
@@ -177,63 +201,72 @@ form h3 {
   margin: 0 auto;
 }
 
+.show-post .box-container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* 4 columns */
+    gap: 1.5rem;
+}
+
 .show-post .box-container .box {
-  position: relative;
-  margin: 1rem;
-  min-height: 20vh;
-  box-shadow: var(--box-shadow);
-  padding: 1rem;
-  border-radius: 0.5rem;
+    position: relative;
+    box-shadow: var(--box-shadow);
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    min-height: 35rem; /* Adjusted height */
 }
 
 .show-post .box-container .box .image {
-  width: 100%;
-  height: 20rem;
-  object-fit: contain;
-  padding: 1rem;
-  margin: 1rem 0;
+    width: 100%;
+    height: 15rem; /* Smaller image height */
+    object-fit: contain;
+    margin-bottom: 1rem;
 }
 
 .show-post .box-container .box .status {
-  position: absolute;
-  left: 4%;
-  text-transform: uppercase;
-  font-size: 1rem;
-  padding: 0.5rem 1rem;
-  border-radius: 0.1rem;
-  display: inline-block;
-  margin-bottom: 1rem;
-  background: var(--light-green);
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    font-size: 0.9rem;
+    padding: 0.3rem 0.8rem;
+    position: absolute;
+    text-transform: uppercase;
+    border-radius: 0.1rem;
+    background: var(--light-green);
 }
 
-.show-post .box-container .box .price {
-  position: absolute;
-  right: 5%;
-  top: 5%;
-  font-size: 2rem;
-  font-weight: bold;
-  color: var(--green);
+.show-post .box-container .box .price-quantity {
+    display: flex;
+    justify-content: space-between;
+    margin: 0.5rem 0;
+    font-size: 1.4rem;
 }
 
 .show-post .box-container .box .title {
-  font-size: 1.3rem;
-  text-transform: uppercase;
-  font-weight: bold;
-  margin-bottom: 1rem;
-  text-align: center;
+    font-size: 1.4rem;
+    margin: 0.5rem 0;
+    text-align: center;
+    flex-grow: 1;
+}
+
+.show-post .box-container .box .flex-btn {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: auto;
 }
 
 .show-post .box-container .box .flex-btn .btn {
-  width: 34%;
-  border-radius: 4px;
-  text-align: center;
+    flex: 1;
+    padding: 0.6rem;
+    font-size: 0.8rem;
+    text-align: center;
+    border-radius: 15px;
 }
-
 .read-post {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 2rem;
 }
 
 .read-post form {
@@ -241,78 +274,307 @@ form h3 {
   border-radius: 0.5rem;
   padding: 2rem;
   box-shadow: var(--box-shadow);
-  position: absolute;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
 }
 
 .read-post form .status {
   position: absolute;
-  top: 3%;
+  top: 2rem;
+  left: 2rem;
   border-radius: 0.5rem;
   padding: 0.5rem 1.5rem;
-  font-size: 1.1rem;
-  display: inline-block;
+  font-size: 1rem;
   text-transform: uppercase;
   background: var(--light-green);
 }
 
 .read-post form .image {
   width: 100%;
-  max-width: 100px;
+  max-width: 250px;
   height: auto;
   object-fit: contain;
   display: block;
-  margin: 0 auto;
+  margin: 1rem auto;
+  border-radius: 0.5rem;
 }
 
-.read-post form .content {
-  line-height: 2;
-  font-size: 1.2rem;
+.read-post form .price {
+  font-size: 2rem;
+  font-weight: bold;
+  color: var(--green);
+  text-align: right;
+  margin-top: 1rem;
+}
+
+.read-post form .title {
+  font-size: 1.1rem;
+  text-align: center;
+  margin: 1rem 0;
+  color: #333;
+}
+
+.read-post form .product_detail {
+  font-size: 1rem;
+  line-height: 1.6;
   color: #555;
-  padding: 1rem 0;
+  padding: 1rem;
+  background: #f9f9f9;
+  border-radius: 0.5rem;
+}
+
+.read-post form .flex-btn {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1rem;
 }
 
 .read-post form .flex-btn .btn {
-  width: 33%;
-  margin: 0.5rem;
+  padding: 0.5rem 1rem;
   text-align: center;
-}
-.read-post form .flex-btn .price {
-  position: absolute;
-  top: 5%;
-  right: 5%;
-  font-size: 2.5rem;
-  font-weight: bold;
-  text-transform: uppercase;
-  margin-bottom: 1rem;
-  color: var(--green);
+  flex: 1;
+  max-width: 100px;
 }
 
-.read-post form .flex-btn title {
-  font-size: 2.5rem;
-  margin-top: 1.5rem;
-  text-align: center;
-  text-transform: uppercase;
+/* Modern Category Management Section */
+.category-management {
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    padding: 30px;
+    margin-bottom: 40px;
 }
 
+.category-management .heading {
+    font-size: 28px;
+    color: #2c3e50;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #f0f2f5;
+    font-weight: 600;
+}
+
+/* Modern Categories Table */
 .categories-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 20px;
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin: 25px 0;
+    font-size: 15px;
+    overflow: hidden;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
 }
-.categories-table th,
-.categories-table td {
-  border: 1px solid #ddd;
-  padding: 8px;
-  text-align: left;
-}
+
 .categories-table th {
-  background-color: #f2f2f2;
+    background-color: #f8fafc;
+    color: #4a5568;
+    font-weight: 600;
+    padding: 16px 20px;
+    text-align: left;
+    border-bottom: 1px solid #e2e8f0;
+    position: sticky;
+    top: 0;
 }
-.categories-table tr:nth-child(even) {
-  background-color: #f9f9f9;
+
+.categories-table td {
+    padding: 14px 20px;
+    border-bottom: 1px solid #f1f5f9;
+    vertical-align: middle;
+    color: #4a5568;
 }
+
+.categories-table tr:last-child td {
+    border-bottom: none;
+}
+
 .categories-table tr:hover {
-  background-color: #f1f1f1;
+    background-color: #f8fafc;
+}
+
+/* Modern Action Buttons */
+.action-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.edit-btn, .delete-btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.2s ease;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.edit-btn {
+    background-color: #4299e1;
+    color: white;
+    box-shadow: 0 2px 5px rgba(66, 153, 225, 0.2);
+}
+
+.edit-btn:hover {
+    background-color: #3182ce;
+    transform: translateY(-1px);
+}
+
+.delete-btn {
+    background-color: #f56565;
+    color: white;
+    box-shadow: 0 2px 5px rgba(245, 101, 101, 0.2);
+}
+
+.delete-btn:hover {
+    background-color: #e53e3e;
+    transform: translateY(-1px);
+}
+
+/* Modern Toggle Form Button */
+.toggle-form-btn {
+    background-color: #48bb78;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 15px;
+    margin: 20px 0;
+    transition: all 0.2s ease;
+    font-weight: 500;
+    box-shadow: 0 2px 10px rgba(72, 187, 120, 0.2);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.toggle-form-btn:hover {
+    background-color: #38a169;
+    transform: translateY(-1px);
+}
+
+.toggle-form-btn::before {
+    content: "+";
+    font-size: 18px;
+}
+
+/* Modern Category Forms */
+.category-form {
+    background-color: #ffffff;
+    padding: 25px;
+    border-radius: 10px;
+    margin-top: 25px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
+}
+
+.category-form .input-field {
+    margin-bottom: 20px;
+}
+
+.category-form label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #4a5568;
+    font-size: 15px;
+}
+
+.category-form input[type="text"],
+.category-form textarea {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 15px;
+    transition: border-color 0.2s ease;
+    background-color: #f8fafc;
+}
+
+.category-form input[type="text"]:focus,
+.category-form textarea:focus {
+    outline: none;
+    border-color: #4299e1;
+    box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.2);
+}
+
+.category-form textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+
+/* Modern Flex Buttons Container */
+.flex-btn {
+    display: flex;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+.btn {
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    border: none;
+}
+
+.btn {
+    background-color: #4299e1;
+    color: white;
+    box-shadow: 0 2px 5px rgba(66, 153, 225, 0.2);
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+}
+
+.cancel-btn {
+    background-color: #e2e8f0;
+    color: #4a5568;
+}
+
+.cancel-btn:hover {
+    background-color: #cbd5e0;
+}
+
+/* Modern animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.category-form {
+    animation: fadeIn 0.3s ease-out;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .categories-table {
+        display: block;
+        overflow-x: auto;
+        border-radius: 8px;
+    }
+    
+    .action-buttons {
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .edit-btn, .delete-btn {
+        width: 100%;
+    }
+    
+    .category-management {
+        padding: 20px;
+    }
 }
 .action-buttons {
   display: flex;
@@ -335,7 +597,7 @@ form h3 {
 .category-form {
   margin-top: 30px;
   padding: 20px;
-  background-color: #f5f5f5;
+  box-shadow: var(--box-shadow);
   border-radius: 5px;
 }
 .toggle-form-btn {
@@ -348,14 +610,55 @@ form h3 {
   border-radius: 3px;
 }
 
-.edit-post .flex-btn .btn {
-  width: 33%;
-  margin: 0.5rem;
-  text-align: center;
+        .status-delivered {
+            color: green;
+        }
 
+        .status-canceled {
+            color: red;
+        }
+
+        .status-in-progress {
+            color: orange;
+        }
+
+        .cancel-btn {
+            background: #f44336;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 5px;
+        }
+
+        .cancel-btn:hover {
+            background: #d32f2f;
+        }
+
+.edit-post .form-container img.image {
+    width: 200px;  /* Or whatever size you prefer */
+    height: auto;
+    display: block;
+    margin-top: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 5px;
 }
 
-.accounts .box-container .box{
+/* Keep the existing flex-btn styles */
+.edit-post .flex-btn .btn {
+    width: 33%;
+    margin: 0.5rem;
+    text-align: center;
+}
+.accounts .box-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(30rem, 1fr));
+    gap: 1.5rem;
+}
+
+.accounts .box-container .box {
     font-size: 1.5rem;
     text-align: center;
     box-shadow: var(--box-shadow);
@@ -364,51 +667,231 @@ form h3 {
     padding-bottom: 3rem;
     line-height: 1.7;
     color: #555;
+}
+
+.accounts .box-container .box span {
+    color: orange;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 5px;
+    margin-top: 10px;
+    justify-content: center;
+}
+
+.action-buttons button {
+    padding: 5px 10px;
+    border: none;
+    cursor: pointer;
+    border-radius: 3px;
+}
+
+.user-form {
+    margin-bottom: 20px;
+    padding: 15px;
+    box-shadow: var(--box-shadow);
+    border-radius: 5px;
+}
+
+.toggle-form-btn {
+    margin-bottom: 15px;
+    padding: 8px 12px;
+    font-size: 17px;
+    background-color: var(--green);
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.order-container .box-container {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 1.5rem;
+}
+
+.order-container .box-container .box {
+  font-size: 1.3rem;
+
+  box-shadow: var(--box-shadow);
+  border-radius: 0.5rem;
+  padding: 2rem 1.5rem;
+  padding-bottom: 3rem;
+  line-height: 1.7;
+  color: #555;
+  position: relative;
+}
+
+.order-container .status{
+  position:absolute;
+  text-transform: uppercase;
+  font-size: 1rem;
+  margin-bottom: 1rem;
+  padding: .5rem 1.5rem;
+  display: inline-block;
+  background: var(--light-green);
+  border-radius: .5rem;
+}
+
+.order-container .detail{
+  margin-top: 3rem;
+ 
+}
+
+/* Messages Container */
+.messages-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 15px;
+}
+
+/* Message Card Styling */
+.message-card {
+    background: white;
+    border-radius: 0.4rem;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    border: 1px solid #eee;
+    position: relative;
+}
+
+/* Message buttons styling */
+.msg-btn {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.7rem;
+    text-align: center;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    text-transform: none;
+    transition: all 0.3s ease;
+    margin-top: 1rem;
+    margin-right: 0.3rem;
+}
+
+.msg-btn-edit {
+    background: var(--blue);
+    color: white;
+}
+
+.msg-btn-delete {
+    background: var(--red);
+    color: white;
+}
+
+.msg-btn:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+}
+
+/* Flex Button Container */
+.flex-btn {
+    display: flex;
+    gap: 0.3rem;
+    margin-top: 1rem;
+}
+
+/* Button Styles */
+.msg-hidden .flex-btn .btn {
+    flex: 1;
+    padding: 0.4rem;
+    font-size: 0.7rem;
+    text-align: center;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    background: var(--green);
+    color: white;
+    text-transform: none;
+    transition: all 0.3s ease;
+}
+
+.btn:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+}
+
+/* Form Group Styling */
+.msg-form-group {
+    margin-bottom: 1rem;
+}
+
+.msg-form-group label {
+  justify-content: left;
+  align-items: left;
+  text-align: left;
+    display: block;
+    margin-bottom: 0.3rem;
+    font-size: 1.2rem;
+    color: #555;
+}
+
+.msg-form-group input,
+.msg-form-group textarea {
+    width: 100%;
+    padding: 0.8rem;
+    border: var(--border);
+    border-radius: 0.4rem;
+    font-size: 1.2rem;
+    box-sizing: border-box;
+}
+
+.msg-form-group textarea {
+    min-height: 8rem;
+    resize: vertical;
+}
+
+/* Hidden Form Styling */
+.msg-hidden {
+    display: none;
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #eee;
+}
+
+/* Heading Styles */
+.heading h1 {
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+    color: black;
+    text-align: center;
+}
+
+/* Message content styling */
+.message-card h3 {
+    font-size: 1.4rem;
+    margin-bottom: 0.8rem;
+    color: black;
+}
+
+.message-card p {
+    font-size: 1.2rem;
+    margin-bottom: 0.4rem;
+    color: #555;
+}
+
+.message-card small {
+    font-size: 1rem;
+    color: #888;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .flex-btn {
+        flex-direction: column;
     }
-
-    .accounts .box-container .box span{
-        color: orange;
+    
+    .btn, .msg-btn {
+        width: 100%;
+        margin-right: 0;
+        margin-bottom: 0.3rem;
     }
-
-    .action-buttons {
-            display: flex;
-            gap: 5px;
-            margin-top: 10px;
-        }
-
-        .action-buttons button {
-            padding: 5px 10px;
-            border: none;
-            cursor: pointer;
-            border-radius: 3px;
-        }
-
-        .edit-btn {
-            background-color: #4CAF50;
-            color: white;
-        }
-
-        .delete-btn {
-            background-color: #f44336;
-            color: white;
-        }
-
-        .user-form {
-            margin-bottom: 20px;
-            padding: 15px;
-            background-color: #f5f5f5;
-            border-radius: 5px;
-        }
-
-        .toggle-form-btn {
-            margin-bottom: 15px;
-            padding: 8px 12px;
-            background-color: #333;
-            color: white;
-            border: none;
-            cursor: pointer;
-            border-radius: 3px;
-        }
+}
 
 .btn {
   line-height: 2;
@@ -1148,8 +1631,9 @@ header.scrolled {
 .form-container input,
 textarea {
   background-color: transparent;
-  width: 85%;
+  width: 100%;
 }
+
 textarea {
   height: 200px;
 }
@@ -1182,10 +1666,10 @@ textarea {
   text-transform: uppercase;
 }
 .form-container form input {
-  width: 85%;
+  width: 100%;
 }
 .form-container form button {
-  width: 85%;
+  width: 100%;
   border-radius: 10px;
   outline: none;
 }

@@ -52,22 +52,7 @@
                     <a href="view_products.php" class="btn">shop now</a>
                 </div>
             </div>
-            <div class="box">
-                <img src="img/5.png">
-                <div class="detail">
-                    <span>Cards</span>
-                    <h1>Loyalty Card</h1>
-                    <a href="view_products.php" class="btn">shop now</a>
-                </div>
-            </div>
-            <div class="box">
-                <img src="img/6.png">
-                <div class="detail">
-                    <span>Cards</span>
-                    <h1> E-Gift Card</h1>
-                    <a href="view_products.php" class="btn">shop now</a>
-                </div>
-            </div>
+         
         </div>
         
        <div class="about">
@@ -82,7 +67,6 @@
                          Me hapësira moderne dhe komode, ne ofrojmë gjithçka që ju nevojitet për ta bërë ngjarjen tuaj të paharrueshme.
                           Na kontaktoni dhe le të krijojmë së bashku një përvojë të veçantë për ju dhe të ftuarit tuaj!</p>
 
-                    <a href="events.php" class="btn">Reserve event</a>
             </div>
 
         </div>

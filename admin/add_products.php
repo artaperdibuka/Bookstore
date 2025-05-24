@@ -42,6 +42,11 @@ if (isset($_POST['publish'])) {
         $price = filter_var($_POST['price'], FILTER_SANITIZE_STRING);
         $content = filter_var($_POST['content'], FILTER_SANITIZE_STRING);
         $status = "active";
+        $quantity = filter_var($_POST['quantity'], FILTER_SANITIZE_NUMBER_INT);
+        if ($quantity < 0) {
+            $warning_msg[] = 'Quantity cannot be negative!';
+            $quantity = 0; // Set to zero if negative
+        }
 
         $image = $_FILES['image']['name'] ?? '';
         $image = filter_var($image, FILTER_SANITIZE_STRING);
@@ -66,8 +71,8 @@ if (isset($_POST['publish'])) {
         if ($select_image->rowCount() > 0 && $image != '') {
             $warning_msg[] = 'Please rename your image!';
         } else {
-            $insert_product = $conn->prepare("INSERT INTO `products`(id, name, price, product_detail, image, status, category_id) VALUES(?,?,?,?,?,?,?)");
-            $insert_product->execute([$id, $name, $price, $content, $image, $status, $category_id]);
+            $insert_product = $conn->prepare("INSERT INTO `products`(id, name, price, product_detail, image, status, category_id,quantity) VALUES(?,?,?,?,?,?,?,?)");
+            $insert_product->execute([$id, $name, $price, $content, $image, $status, $category_id, $quantity ]);
             $success_msg[] = 'Product added successfully!';
         }
     }
@@ -89,6 +94,11 @@ if (isset($_POST['draft'])) {
         $price = filter_var($_POST['price'], FILTER_SANITIZE_STRING);
         $content = filter_var($_POST['content'], FILTER_SANITIZE_STRING);
         $status = "deactive";
+        $quantity = filter_var($_POST['quantity'], FILTER_SANITIZE_NUMBER_INT);
+        if ($quantity < 0) {
+            $warning_msg[] = 'Quantity cannot be negative!';
+            $quantity = 0; // Set to zero if negative
+        }
 
         $image = $_FILES['image']['name'] ?? '';
         $image = filter_var($image, FILTER_SANITIZE_STRING);
@@ -160,7 +170,12 @@ if (isset($_POST['draft'])) {
                     <input type="number" name="price" maxlength="100" placeholder="Product Price" required>
                 </div>
                 <div class="input-field">
+                    <label>Product quantity</label>
+                    <input type="number" name="quantity" min="0" placeholder="Product Quantity" required>
+                </div>
+                <div class="input-field">
                     <label>category</label>
+                    <br/>
                     <select name="category_id" required>
                         <option value="">Select a category</option>
                         <?php foreach ($categories as $category): ?>
@@ -170,7 +185,7 @@ if (isset($_POST['draft'])) {
                 </div>
                 <div class="input-field">
                     <label> porudct detail</label>
-                    <textarea name="content" required maxlength="1000" placeholder="write Product description" required></textarea>
+                    <textarea name="content" required maxlength="1000" style="resize: none;" required placeholder="write Product description" required></textarea>
                 </div>
                 <div class="input-field">
                     <label> porudct image</label>

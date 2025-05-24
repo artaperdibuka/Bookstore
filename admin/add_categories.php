@@ -226,9 +226,12 @@ if (isset($_POST['draft'])) {
                     </div>
                     <div class="input-field">
                         <label>Description</label>
-                        <textarea name="category_description" maxlength="500" placeholder="Category Description"></textarea>
+                        <textarea name="category_description" style="resize: none;" maxlength="500" placeholder="Category Description"></textarea>
                     </div>
-                    <button type="submit" name="add_category" class="btn">Add Category</button>
+                     <div class="flex-btn">
+            <button type="submit" name="add_category" class="btn">Add Category</button>
+            <button type="button" onclick="document.getElementById('categoryForm').style.display='none'" class="btn cancel-btn">Cancel</button>
+        </div>
                 </form>
             </div>
             
@@ -242,9 +245,12 @@ if (isset($_POST['draft'])) {
                     </div>
                     <div class="input-field">
                         <label>Description</label>
-                        <textarea name="category_description" id="edit_category_description" maxlength="500" placeholder="Category Description"></textarea>
+                        <textarea name="category_description" id="edit_category_description" style="resize: none;" maxlength="500" placeholder="Category Description"></textarea>
                     </div>
-                    <button type="submit" name="update_category" class="btn">Update Category</button>
+                   <div class="flex-btn">
+            <button type="submit" name="update_category" class="btn">Update Category</button>
+            <button type="button" onclick="document.getElementById('editCategoryForm').style.display='none'" class="btn cancel-btn">Cancel</button>
+        </div>
                 </form>
             </div>
         </section>
